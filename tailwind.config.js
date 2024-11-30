@@ -10,7 +10,7 @@ export default {
         "robert-medium": ["robert-medium", "sans-serif"],
         "robert-regular": ["robert-regular", "sans-serif"],
       },
-      theme: {
+      colors: {
         bgColor: "#DFDFF2",
         textColor: "#DFDFF2",
         textColorInverted: "#000",
