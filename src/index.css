@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --half-size: 10rem;
+  --full-size: 20rem;
+  --rx: 1rem;
+}
+
 body {
   font-family: "general", sans-serif;
   width: 100dvw;
@@ -33,5 +39,61 @@ body {
   @font-face {
     font-family: "robert-regular";
     src: url("/fonts/robert-regular.woff2") format("woff2");
+  }
+}
+
+@layer utilities {
+  .absolute-center {
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
+  /* .mask-clip-path { */
+  /*   clip-path: inset(100% 100% 100% 100% round 1%); */
+  /* } */
+  /* .mask-clip-path-hover { */
+  /*   clip-path: inset(30.26% 34.58% 23.42% 37.95% round 1%); */
+  /*   animation: mask-clip-path-animation 2.5s linear infinite; */
+  /* } */
+  .mask-clip-path-border {
+    position: absolute;
+    top: 30.26%;
+    bottom: 23.42%;
+    right: 34.58%;
+    left: 37.95%;
+    border: 1px solid black;
+    border-radius: 2.5%;
+    animation: mask-clip-path-border-animation 2.5s linear infinite;
+  }
+}
+
+@keyframes mask-clip-path-animation {
+  0% {
+    clip-path: inset(30.26% 34.58% 23.42% 37.95% round 1%);
+  }
+  50% {
+    clip-path: inset(32.26% 36.58% 25.42% 39.95% round 1%);
+  }
+  100% {
+    clip-path: inset(30.26% 34.58% 23.42% 37.95% round 1%);
+  }
+}
+
+@keyframes mask-clip-path-border-animation {
+  0% {
+    top: 30.26%;
+    bottom: 23.42%;
+    right: 34.58%;
+    left: 37.95%;
+  }
+  50% {
+    top: 32.26%;
+    bottom: 25.42%;
+    right: 36.58%;
+    left: 39.95%;
+  }
+  100% {
+    top: 30.26%;
+    bottom: 23.42%;
+    right: 34.58%;
+    left: 37.95%;
   }
 }
