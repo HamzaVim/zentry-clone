@@ -40,12 +40,11 @@ function Hero() {
           {/* NOTE: Div container that has svg for video mask and border */}
           <div
             style={{
-              width: "var(--full-size)",
-              height: "var(--full-size)",
-              transform: `translate(calc(50vw - var(--half-size)), calc(50vh - var(--half-size)))`,
+              width: "var(--container-full-size)",
+              height: "var(--container-full-size)",
               borderRadius: "var(--rx)",
             }}
-            className="relative z-50"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
           >
             <div
               id="mask-border"
@@ -53,10 +52,8 @@ function Hero() {
                 width: "var(--full-size)",
                 height: "var(--full-size)",
                 borderRadius: "var(--rx)",
-                top: "0%",
-                left: "0%",
               }}
-              className="border-black border-[1.5px] absolute  z-[60]"
+              className="border-black border-[1.5px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  z-[60]"
             ></div>
             <svg
               viewBox="0 0 300 300"
