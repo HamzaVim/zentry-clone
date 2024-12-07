@@ -39,6 +39,7 @@ function Hero() {
         >
           {/* NOTE: Div container that has svg for video mask and border */}
           <div
+            id="mask-container"
             style={{
               width: "var(--container-full-size)",
               height: "var(--container-full-size)",
