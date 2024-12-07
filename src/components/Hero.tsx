@@ -8,6 +8,9 @@ function Hero() {
   const [mouseActive, setMouseActive] = useState(false);
   const [mouseActiveTime, setMouseActiveTime] = useState(0);
 
+  // NOTE: Hover state for the `mask-container`
+  const [maskHover, setMaskHover] = useState(false);
+
   // NOTE: Every 500ms check if mouse is active more than the time now.
   // When the mouse is moving `mouseActive` is set to true, and `mouseActiveTime` is set to the current time
   // When `mouseActive` is false (not active), `useInterval` is cleared
@@ -46,6 +49,12 @@ function Hero() {
               borderRadius: "var(--rx)",
             }}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
+            onMouseEnter={() => {
+              setMaskHover(true);
+            }}
+            onMouseLeave={() => {
+              setMaskHover(false);
+            }}
           >
             <div
               id="mask-border"
