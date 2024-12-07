@@ -49,11 +49,11 @@ function Hero() {
             <div
               id="mask-border"
               style={{
-                width: "var(--full-size)",
-                height: "var(--full-size)",
-                borderRadius: "var(--rx)",
+                width: "calc(var(--full-size) - 2px)",
+                height: "calc(var(--full-size) - 2px)",
+                borderRadius: "calc(var(--rx) - 2px)",
               }}
-              className="border-black border-[1.5px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  z-[60]"
+              className="outline outline-black outline-[2px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  z-[60]"
             ></div>
             <svg
               viewBox="0 0 300 300"
