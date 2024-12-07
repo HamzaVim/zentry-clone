@@ -6,11 +6,11 @@
   /* NOTE: For animation when start */
   --half-size: 10rem;
   --full-size: 20rem;
-  --rx: 1rem;
+  --rx: 0.4rem;
 
   /* NOTE: For the svg and border container */
-  --container-full-size: 26rem;
-  --container-rx: 1rem;
+  --container-full-size: 24rem;
+  --container-rx: 0.4rem;
 }
 
 body {
