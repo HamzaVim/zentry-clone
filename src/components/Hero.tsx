@@ -1,3 +1,5 @@
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { useState } from "react";
 import { useInterval } from "usehooks-ts";
 
@@ -24,6 +26,35 @@ function Hero() {
     },
     mouseActive ? 300 : null,
   );
+
+  // NOTE: Animation when the `mask-container` is hovered ---------------------------------------------------
+  useGSAP(
+    () => {
+      if (maskHover) {
+        gsap.to("#mask-rect, #mask-border", {
+          overwrite: true,
+          duration: 0.7,
+          ease: "power1.inOut",
+          "--full-size": "22rem",
+          "--half-size": "11rem",
+          yoyo: true,
+          repeat: -1,
+        });
+      } else {
+        gsap.to("#mask-rect, #mask-border", {
+          overwrite: true,
+          duration: 0.5,
+          ease: "none",
+          "--full-size": "20rem",
+          "--half-size": "10rem",
+          yoyo: false,
+          repeat: 0,
+        });
+      }
+    },
+    { dependencies: [maskHover] },
+  );
+  // NOTE: ---------------------------------------------------
 
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden">
