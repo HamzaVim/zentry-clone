@@ -17,12 +17,12 @@ function Hero() {
 
   // NOTE: Functions: ---------------------------------------------------
 
-  // Every 500ms check if mouse is active more than the time now.
+  // Every 300ms check if mouse is active more than the time now.
   // When the mouse is moving `mouseActive` is set to true, and `mouseActiveTime` is set to the current time
   // When `mouseActive` is false (not active), `useInterval` is cleared
   useInterval(
     () => {
-      if (mouseActiveTime <= Date.now() - 300) {
+      if (mouseActiveTime <= Date.now() - 100) {
         setMouseActive(false);
         return;
       }
