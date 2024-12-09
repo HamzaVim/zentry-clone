@@ -56,17 +56,55 @@ function Hero() {
   );
   // NOTE: ---------------------------------------------------
 
+  // NOTE: Parallax Effect for `mask-rect` & `mask-border` ---------------------------------------------------
   const heroRef = useRef<HTMLDivElement>(null);
+  useGSAP(() => {
+    if (!heroRef.current) return;
+
+    heroRef.current.addEventListener("mousemove", (e) => {
+      // Get the mouse position
+      const x = e.clientX;
+      const y = e.clientY;
+
+      // Get the middle of the screen / object
+      const middleX = window.innerWidth / 2;
+      const middleY = window.innerHeight / 2;
+
+      // Get offset from middle
+      const offsetX = x - middleX;
+      const offsetY = y - middleY;
+
+      // For mouse movement
+      const mouseX = offsetX * 0.2;
+      const mouseY = offsetY * 0.2;
+
+      // For parallax effect
+      const parallaxY = (offsetX / middleX) * 45;
+      const parallaxX = (offsetY / middleY) * 45;
+
+      gsap.to("#mask-rect, #mask-border", {
+        overwrite: "auto",
+        duration: 0,
+        ease: "none",
+        "--mouse-x": mouseX,
+        "--mouse-y": mouseY,
+        "--rotate-x": `${-1 * parallaxX}deg`,
+        "--rotate-y": `${parallaxY}deg`,
+      });
+    });
+  });
+  // NOTE: ---------------------------------------------------
+
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden">
       {/* NOTE: the container of all the videos. */}
       <div
+        ref={heroRef}
         className="h-dvh w-screen absolute top-0 left-0"
         onMouseMove={() => {
           setMouseActiveTime(Date.now());
           setMouseActive(true);
         }}
-        ref={heroRef}
       >
         {/* NOTE: An array of video frames */}
         <div
