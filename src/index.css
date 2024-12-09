@@ -9,8 +9,15 @@
   --rx: 0.4rem;
 
   /* NOTE: For the svg and border container */
-  --container-full-size: 24rem;
+  --container-full-size: 26rem;
   --container-rx: 0.4rem;
+
+  /* NOTE: rect and border position for mouse movement, 0px initial value */
+  --mouse-x: 0px;
+  --mouse-y: 0px;
+
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
 }
 
 body {

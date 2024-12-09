@@ -1,6 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useInterval } from "usehooks-ts";
 
 function Hero() {
@@ -56,6 +56,7 @@ function Hero() {
   );
   // NOTE: ---------------------------------------------------
 
+  const heroRef = useRef<HTMLDivElement>(null);
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden">
       {/* NOTE: the container of all the videos. */}
@@ -65,6 +66,7 @@ function Hero() {
           setMouseActiveTime(Date.now());
           setMouseActive(true);
         }}
+        ref={heroRef}
       >
         {/* NOTE: An array of video frames */}
         <div
@@ -93,8 +95,9 @@ function Hero() {
                 width: "calc(var(--full-size) - 2px)",
                 height: "calc(var(--full-size) - 2px)",
                 borderRadius: "calc(var(--rx) - 2px)",
+                transform: `translate(calc(50% - var(--full-size) + 2px + var(--mouse-x)),calc(50% - var(--full-size) + 2px + var(--mouse-y))) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
               }}
-              className="outline outline-black outline-[2px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  z-[60]"
+              className="border-[2px] border-black absolute top-1/2 left-1/2 z-[60]"
             ></div>
             <svg
               viewBox="0 0 300 300"
@@ -111,7 +114,8 @@ function Hero() {
                   style={{
                     width: "var(--full-size)",
                     height: "var(--full-size)",
-                    transform: `translate(calc(50vw - var(--half-size)), calc(50vh - var(--half-size)))`,
+                    transform: `translate(calc(50vw - var(--half-size) + var(--mouse-x)), calc(50vh - var(--half-size) + var(--mouse-y))) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
+                    transformOrigin: "50% 50%",
                   }}
                 />
               </mask>
