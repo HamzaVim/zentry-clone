@@ -4,12 +4,12 @@
 
 :root {
   /* NOTE: For animation when start */
-  --half-size: 10rem;
-  --full-size: 20rem;
-  --rx: 0.4rem;
+  --half-size: 0rem;
+  --full-size: 0rem;
+  --rx: 0rem;
 
   /* NOTE: For the svg and border container */
-  --container-full-size: 26rem;
+  --container-full-size: 20rem;
   --container-rx: 0.4rem;
 
   /* NOTE: rect and border position for mouse movement, 0px initial value */
