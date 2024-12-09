@@ -6,14 +6,18 @@ import { useInterval } from "usehooks-ts";
 function Hero() {
   // NOTE: The total number of videos
 
-  // NOTE: State for mouse movement
+  // NOTE: States: ---------------------------------------------------
+
+  // For mouse movement
   const [mouseActive, setMouseActive] = useState(false);
   const [mouseActiveTime, setMouseActiveTime] = useState(0);
 
-  // NOTE: Hover state for the `mask-container`
+  // Hover state for the `mask-container`
   const [maskHover, setMaskHover] = useState(false);
 
-  // NOTE: Every 500ms check if mouse is active more than the time now.
+  // NOTE: Functions: ---------------------------------------------------
+
+  // Every 500ms check if mouse is active more than the time now.
   // When the mouse is moving `mouseActive` is set to true, and `mouseActiveTime` is set to the current time
   // When `mouseActive` is false (not active), `useInterval` is cleared
   useInterval(
@@ -27,7 +31,9 @@ function Hero() {
     mouseActive ? 300 : null,
   );
 
-  // NOTE: Animation when the `mask-container` is hovered ---------------------------------------------------
+  // NOTE: Animations: ---------------------------------------------------
+
+  // When the `mask-container` is hovered ---------------------------------------------------
   useGSAP(
     () => {
       if (maskHover) {
@@ -54,9 +60,8 @@ function Hero() {
     },
     { dependencies: [maskHover] },
   );
-  // NOTE: ---------------------------------------------------
 
-  // NOTE: Parallax Effect for `mask-rect` & `mask-border` ---------------------------------------------------
+  // Parallax Effect for `mask-rect` & `mask-border` ---------------------------------------------------
   const heroRef = useRef<HTMLDivElement>(null);
   useGSAP(() => {
     if (!heroRef.current) return;
@@ -93,7 +98,6 @@ function Hero() {
       });
     });
   });
-  // NOTE: ---------------------------------------------------
 
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden">
