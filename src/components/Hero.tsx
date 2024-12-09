@@ -134,6 +134,7 @@ function Hero() {
                 height: "calc(var(--full-size) - 2px)",
                 borderRadius: "calc(var(--rx) - 2px)",
                 transform: `translate(calc(50% - var(--full-size) + 2px + var(--mouse-x)),calc(50% - var(--full-size) + 2px + var(--mouse-y))) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
+                transformBox: "border-box",
               }}
               className="border-[2px] border-black absolute top-1/2 left-1/2 z-[60]"
             ></div>
@@ -154,6 +155,7 @@ function Hero() {
                     height: "var(--full-size)",
                     transform: `translate(calc(50vw - var(--half-size) + var(--mouse-x)), calc(50vh - var(--half-size) + var(--mouse-y))) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
                     transformOrigin: "50% 50%",
+                    transformBox: "border-box",
                   }}
                 />
               </mask>
