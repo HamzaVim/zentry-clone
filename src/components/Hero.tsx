@@ -240,7 +240,7 @@ function Hero() {
                 width: "calc(var(--full-size) - 2px)",
                 height: "calc(var(--full-size) - 2px)",
                 borderRadius: "calc(var(--rx) - 2px)",
-                transform: `translate(calc(50% - var(--full-size) + 2px + var(--mouse-x)),calc(50% - var(--full-size) + 2px + var(--mouse-y))) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
+                transform: `translate(calc(0vw - var(--half-size) + var(--mouse-x)),calc(0vh - var(--half-size) + var(--mouse-y))) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
                 transformBox: "border-box",
                 outlineWidth: "0px",
               }}

@@ -12,10 +12,9 @@
   --container-full-size: 20rem;
   --container-rx: 0.4rem;
 
-  /* NOTE: rect and border position for mouse movement, 0px initial value */
+  /* NOTE: rect and border position and rotation for mouse movement, 0px and 0deg initial value */
   --mouse-x: 0px;
   --mouse-y: 0px;
-
   --rotate-x: 0deg;
   --rotate-y: 0deg;
 }
