@@ -14,6 +14,7 @@ function Hero() {
 
   // Hover state for the `mask-container`
   const [maskHover, setMaskHover] = useState(false);
+  const [animationLoaded, setAnimationLoaded] = useState(false);
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -106,6 +107,7 @@ function Hero() {
 
     });
   });
+      if (!timelineMouseActive.current || maskHover || !animationLoaded) return;
 
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden">
@@ -114,6 +116,7 @@ function Hero() {
         ref={heroRef}
         className="h-dvh w-screen absolute top-0 left-0"
         onMouseMove={() => {
+          if (!animationLoaded) setAnimationLoaded(true);
           setMouseActiveTime(Date.now());
           setMouseActive(true);
         }}
