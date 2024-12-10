@@ -115,7 +115,77 @@ function Hero() {
 
     });
   });
+  // When the mouse is active/not active ---------------------------------------------------
+  useGSAP(
+    () => {
       if (!timelineMouseActive.current || maskHover || !animationLoaded) return;
+
+      if (mouseActive) {
+        const active = timelineMouseActive.current.isActive();
+        timelineMouseActive.current.clear();
+        if (active) {
+          timelineMouseActive.current.to("#mask-rect, #mask-border", {
+            duration: 1,
+            ease: "none",
+            "--full-size": "18rem",
+            "--half-size": "9rem",
+            "--rx": "0.4rem",
+            outlineWidth: 2,
+          });
+        } else {
+          timelineMouseActive.current
+            .to("#mask-border", {
+              overwrite: true,
+              duration: 0,
+              ease: "none",
+              outlineWidth: 2,
+            })
+            .to("#mask-rect, #mask-border", {
+              duration: 0,
+              ease: "none",
+              "--rx": "0.1rem",
+            })
+            .to("#mask-rect, #mask-border", {
+              duration: 1,
+              ease: "none",
+              "--full-size": "18rem",
+              "--half-size": "9rem",
+              "--rx": "0.4rem",
+            });
+        }
+      } else {
+        timelineMouseActive.current.clear();
+        timelineMouseActive.current
+          .to("#mask-rect, #mask-border", {
+            overwrite: true,
+            duration: 1,
+            ease: "power1.out",
+            "--full-size": "6rem",
+            "--half-size": "3rem",
+            "--rx": "0.4rem",
+            outlineWidth: 2,
+          })
+          .to(
+            "#mask-rect, #mask-border",
+            {
+              duration: 1,
+              ease: "none",
+              "--full-size": "0rem",
+              "--half-size": "0rem",
+              "--rx": "0.1rem",
+            },
+            "-=0.2",
+          )
+          .to("#mask-rect, #mask-border", {
+            duration: 0,
+            ease: "none",
+            outlineWidth: 0,
+            "--rx": "0rem",
+          });
+      }
+    },
+    { dependencies: [mouseActive] },
+  );
 
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden">
