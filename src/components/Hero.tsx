@@ -66,7 +66,7 @@ function Hero() {
   useGSAP(() => {
     if (!heroRef.current) return;
 
-    heroRef.current.addEventListener("mousemove", (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       // Get the mouse position
       const x = e.clientX;
       const y = e.clientY;
@@ -96,6 +96,14 @@ function Hero() {
         "--rotate-x": `${-1 * parallaxX}deg`,
         "--rotate-y": `${parallaxY}deg`,
       });
+    };
+    heroRef.current.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      heroRef.current?.removeEventListener("mousemove", handleMouseMove);
+    };
+  });
+
     });
   });
 
