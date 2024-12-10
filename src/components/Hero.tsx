@@ -34,6 +34,14 @@ function Hero() {
 
   // NOTE: Animations: ---------------------------------------------------
 
+  // Timeline declarations: ---------------------------------------------------
+  const timelineHoverRef = useRef<GSAPTimeline>();
+  const timelineMouseActive = useRef<GSAPTimeline>();
+  useGSAP(() => {
+    timelineMouseActive.current = gsap.timeline();
+    timelineHoverRef.current = gsap.timeline();
+  });
+
   // When the `mask-container` is hovered ---------------------------------------------------
   useGSAP(
     () => {
