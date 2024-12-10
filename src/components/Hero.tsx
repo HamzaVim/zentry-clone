@@ -45,23 +45,38 @@ function Hero() {
   // When the `mask-container` is hovered ---------------------------------------------------
   useGSAP(
     () => {
+      if (
+        !timelineHoverRef.current ||
+        !timelineMouseActive.current ||
+        !animationLoaded
+      )
+        return;
+      timelineMouseActive.current.clear();
+      timelineHoverRef.current.clear();
       if (maskHover) {
-        gsap.to("#mask-rect, #mask-border", {
+        timelineHoverRef.current
+          .to("#mask-rect, #mask-border", {
+            duration: 0.5,
+            ease: "none",
+            "--full-size": "18rem",
+            "--half-size": "9rem",
+            "--rx": "0.4rem",
+          })
+          .to("#mask-rect, #mask-border", {
+            duration: 0.7,
+            ease: "power1.inOut",
+            "--full-size": "19.5rem",
+            "--half-size": "9.75rem",
+            yoyo: true,
+            repeat: -1,
+          });
+      } else {
+        timelineHoverRef.current.to("#mask-rect, #mask-border", {
           overwrite: true,
           duration: 0.7,
-          ease: "power1.inOut",
-          "--full-size": "22rem",
-          "--half-size": "11rem",
-          yoyo: true,
-          repeat: -1,
-        });
-      } else {
-        gsap.to("#mask-rect, #mask-border", {
-          overwrite: true,
-          duration: 0.5,
           ease: "none",
-          "--full-size": "20rem",
-          "--half-size": "10rem",
+          "--full-size": "18rem",
+          "--half-size": "9rem",
           yoyo: false,
           repeat: 0,
         });
@@ -113,8 +128,6 @@ function Hero() {
     };
   });
 
-    });
-  });
   // When the mouse is active/not active ---------------------------------------------------
   useGSAP(
     () => {
