@@ -36,9 +36,9 @@ function Hero() {
 
   // Timeline declarations: ---------------------------------------------------
   const timelineHoverRef = useRef<GSAPTimeline>();
-  const timelineMouseActive = useRef<GSAPTimeline>();
+  const timelineMouseActiveRef = useRef<GSAPTimeline>();
   useGSAP(() => {
-    timelineMouseActive.current = gsap.timeline();
+    timelineMouseActiveRef.current = gsap.timeline();
     timelineHoverRef.current = gsap.timeline();
   });
 
@@ -47,11 +47,11 @@ function Hero() {
     () => {
       if (
         !timelineHoverRef.current ||
-        !timelineMouseActive.current ||
+        !timelineMouseActiveRef.current ||
         !animationLoaded
       )
         return;
-      timelineMouseActive.current.clear();
+      timelineMouseActiveRef.current.clear();
       timelineHoverRef.current.clear();
       if (maskHover) {
         timelineHoverRef.current
@@ -131,13 +131,14 @@ function Hero() {
   // When the mouse is active/not active ---------------------------------------------------
   useGSAP(
     () => {
-      if (!timelineMouseActive.current || maskHover || !animationLoaded) return;
+      if (!timelineMouseActiveRef.current || maskHover || !animationLoaded)
+        return;
 
       if (mouseActive) {
-        const active = timelineMouseActive.current.isActive();
-        timelineMouseActive.current.clear();
+        const active = timelineMouseActiveRef.current.isActive();
+        timelineMouseActiveRef.current.clear();
         if (active) {
-          timelineMouseActive.current.to("#mask-rect, #mask-border", {
+          timelineMouseActiveRef.current.to("#mask-rect, #mask-border", {
             duration: 1,
             ease: "none",
             "--full-size": "18rem",
@@ -146,7 +147,7 @@ function Hero() {
             outlineWidth: 2,
           });
         } else {
-          timelineMouseActive.current
+          timelineMouseActiveRef.current
             .to("#mask-border", {
               overwrite: true,
               duration: 0,
@@ -167,8 +168,8 @@ function Hero() {
             });
         }
       } else {
-        timelineMouseActive.current.clear();
-        timelineMouseActive.current
+        timelineMouseActiveRef.current.clear();
+        timelineMouseActiveRef.current
           .to("#mask-rect, #mask-border", {
             overwrite: true,
             duration: 1,
