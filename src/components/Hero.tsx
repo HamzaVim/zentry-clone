@@ -226,7 +226,7 @@ function Hero() {
               height: "var(--container-full-size)",
               borderRadius: "var(--rx)",
             }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
+            className="cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
             onMouseEnter={() => {
               setMaskHover(true);
             }}
@@ -237,10 +237,10 @@ function Hero() {
             <div
               id="mask-border"
               style={{
-                width: "calc(var(--full-size) - 2px)",
-                height: "calc(var(--full-size) - 2px)",
+                width: "calc(var(--full-size) - 2px + var(--full-screan-w))",
+                height: "calc(var(--full-size) - 2px + var(--full-screan-h))",
                 borderRadius: "calc(var(--rx) - 2px)",
-                transform: `translate(calc(0vw - var(--half-size) + var(--mouse-x)),calc(0vh - var(--half-size) + var(--mouse-y))) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
+                transform: `translate(calc(var(--translate-w) - var(--half-size) + var(--mouse-x) - 50vw),calc(var(--translate-h) - var(--half-size) + var(--mouse-y) - 50vh)) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
                 transformBox: "border-box",
                 outlineWidth: "0px",
               }}
@@ -259,9 +259,9 @@ function Hero() {
                   y={0}
                   x={0}
                   style={{
-                    width: "var(--full-size)",
-                    height: "var(--full-size)",
-                    transform: `translate(calc(50vw - var(--half-size) + var(--mouse-x)), calc(50vh - var(--half-size) + var(--mouse-y))) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
+                    width: "calc(var(--full-size) + var(--full-screan-w))",
+                    height: "calc(var(--full-size) + var(--full-screan-h))",
+                    transform: `translate(calc(var(--translate-w) - var(--half-size) + var(--mouse-x)), calc(var(--translate-h) - var(--half-size) + var(--mouse-y))) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
                     transformOrigin: "50% 50%",
                     transformBox: "border-box",
                   }}
