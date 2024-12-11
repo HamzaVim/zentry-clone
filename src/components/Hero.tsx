@@ -1,6 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useInterval } from "usehooks-ts";
 
 function Hero() {
@@ -14,7 +14,12 @@ function Hero() {
 
   // Hover state for the `mask-container`
   const [maskHover, setMaskHover] = useState(false);
+
+  // Stop all animation mouse isn't moving at the first place.
   const [animationLoaded, setAnimationLoaded] = useState(false);
+
+  // When the mini video (mask) clicked all animation stops.
+  const [miniVidChangeAnimation, setMiniVidChangeAnimation] = useState(false);
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -37,9 +42,11 @@ function Hero() {
   // Timeline declarations: ---------------------------------------------------
   const timelineHoverRef = useRef<GSAPTimeline>();
   const timelineMouseActiveRef = useRef<GSAPTimeline>();
+  const timelineMiniVidChangeRef = useRef<GSAPTimeline>();
   useGSAP(() => {
     timelineMouseActiveRef.current = gsap.timeline();
     timelineHoverRef.current = gsap.timeline();
+    timelineMiniVidChangeRef.current = gsap.timeline();
   });
 
   // When the `mask-container` is hovered ---------------------------------------------------
@@ -48,11 +55,14 @@ function Hero() {
       if (
         !timelineHoverRef.current ||
         !timelineMouseActiveRef.current ||
-        !animationLoaded
+        !animationLoaded ||
+        !timelineMiniVidChangeRef.current
       )
         return;
       timelineMouseActiveRef.current.clear();
       timelineHoverRef.current.clear();
+      timelineMiniVidChangeRef.current.clear();
+
       if (maskHover) {
         timelineHoverRef.current
           .to("#mask-rect, #mask-border", {
@@ -87,10 +97,10 @@ function Hero() {
 
   // Parallax Effect for `mask-rect` & `mask-border` ---------------------------------------------------
   const heroRef = useRef<HTMLDivElement>(null);
-  useGSAP(() => {
-    if (!heroRef.current) return;
+  const { contextSafe } = useGSAP();
 
-    const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = useCallback(
+    contextSafe((e: MouseEvent) => {
       // Get the mouse position
       const x = e.clientX;
       const y = e.clientY;
@@ -120,19 +130,39 @@ function Hero() {
         "--rotate-x": `${-1 * parallaxX}deg`,
         "--rotate-y": `${parallaxY}deg`,
       });
-    };
-    heroRef.current.addEventListener("mousemove", handleMouseMove);
+    }),
+    [],
+  );
+  useGSAP(
+    () => {
+      if (!heroRef.current) return;
 
-    return () => {
-      heroRef.current?.removeEventListener("mousemove", handleMouseMove);
-    };
-  });
+      if (!miniVidChangeAnimation) {
+        heroRef.current.addEventListener("mousemove", handleMouseMove);
+      } else {
+        heroRef.current.removeEventListener("mousemove", handleMouseMove);
+      }
+
+      return () => {
+        heroRef.current?.removeEventListener("mousemove", handleMouseMove);
+      };
+    },
+    { dependencies: [miniVidChangeAnimation] },
+  );
 
   // When the mouse is active/not active ---------------------------------------------------
   useGSAP(
     () => {
-      if (!timelineMouseActiveRef.current || maskHover || !animationLoaded)
+      if (
+        !timelineMouseActiveRef.current ||
+        !timelineHoverRef.current ||
+        maskHover ||
+        !animationLoaded ||
+        miniVidChangeAnimation
+      )
         return;
+
+      timelineHoverRef.current.clear();
 
       if (mouseActive) {
         const active = timelineMouseActiveRef.current.isActive();
@@ -201,6 +231,48 @@ function Hero() {
     { dependencies: [mouseActive] },
   );
 
+  // Mini video when change it will increase the size of the mask to fill the screen ---------------------------------------------------
+  useGSAP(
+    () => {
+      if (
+        !timelineHoverRef.current ||
+        !timelineMouseActiveRef.current ||
+        !animationLoaded ||
+        !timelineMiniVidChangeRef.current
+      )
+        return;
+      timelineMouseActiveRef.current.clear();
+      timelineHoverRef.current.clear();
+      timelineMiniVidChangeRef.current.clear();
+
+      if (miniVidChangeAnimation) {
+        timelineMiniVidChangeRef.current
+          .to("#mask-rect, #mask-border", {
+            overwrite: true,
+            duration: 0.2,
+            ease: "power1.out",
+            "--mouse-x": 0,
+            "--mouse-y": 0,
+            "--rotate-x": "0deg",
+            "--rotate-y": "0deg",
+            yoyo: false,
+            repeat: 0,
+          })
+          .to("#mask-rect, #mask-border", {
+            duration: 1,
+            ease: "power1.out",
+            "--full-screan-h": "101dvh",
+            "--full-screan-w": "102vw",
+            "--half-size": "0rem",
+            "--full-size": "0rem",
+            "--translate-w": "-1vw",
+            "--translate-h": "-1vh",
+          });
+      }
+    },
+    { dependencies: [miniVidChangeAnimation] },
+  );
+
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden">
       {/* NOTE: the container of all the videos. */}
@@ -227,6 +299,7 @@ function Hero() {
               borderRadius: "var(--rx)",
             }}
             className="cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
+            onClick={() => setMiniVidChangeAnimation(!miniVidChangeAnimation)}
             onMouseEnter={() => {
               setMaskHover(true);
             }}
