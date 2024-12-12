@@ -326,7 +326,7 @@ function Hero() {
           });
           gsap.to(`#video-frame-${prevCurrentIndex}`, {
             duration: 0,
-            delay: animationLoaded ? 1.2 : 0,
+            delay: animationLoaded ? 1.2 : 0.1,
             zIndex: 0,
             display: "none",
           });
