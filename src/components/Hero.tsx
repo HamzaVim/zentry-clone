@@ -333,6 +333,29 @@ function Hero() {
     { dependencies: [currentIndex] },
   );
 
+  // Initial video state ---------------------------------------------------
+  useGSAP(() => {
+    const nextCurrentIndex = getNextCurrentIndex();
+
+    gsap.set(
+      `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+      {
+        "--full-size": "18rem",
+        "--half-size": "9rem",
+        "--rx": "0.4rem",
+        outlineWidth: 2,
+      },
+    );
+    gsap.set(`#mask-rect-${currentIndex}, #mask-border-${currentIndex}`, {
+      "--full-screan-h": "101dvh",
+      "--full-screan-w": "102vw",
+      "--half-size": "0rem",
+      "--full-size": "0rem",
+      "--translate-w": "-1vw",
+      "--translate-h": "-1vh",
+    });
+  });
+
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden">
       {/* NOTE: the container of all the videos. */}
@@ -353,8 +376,56 @@ function Hero() {
             key={i}
           >
             {/* NOTE: Div container that has svg for video mask and border */}
+            <div
+              id={`mask-container-${i}`}
+              style={{
+                width: "var(--container-full-size)",
+                height: "var(--container-full-size)",
+                borderRadius: "var(--rx)",
+              }}
+              className="cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
+            >
+              {/* NOTE: Div container that has svg for video mask and border */}
+              <div
+                id={`mask-border-${i}`}
+                style={{
+                  width: "calc(var(--full-size) - 2px + var(--full-screan-w))",
+                  height: "calc(var(--full-size) - 2px + var(--full-screan-h))",
+                  borderRadius: "calc(var(--rx) - 2px)",
+                  transform: `translate(calc(var(--translate-w) - var(--half-size) + var(--mouse-x) - 50vw),calc(var(--translate-h) - var(--half-size) + var(--mouse-y) - 50vh)) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
+                  transformBox: "border-box",
+                  outlineWidth: "0px",
+                }}
+                className="outline outline-black absolute top-1/2 left-1/2 z-[60]"
+              ></div>
+              <svg
+                viewBox="0 0 300 300"
+                xmlns="http://www.w3.org/2000/svg"
+                className="absolute w-full h-full"
+              >
+                <mask id={`mask-${i}`} maskUnits="objectBoundingBox">
+                  <rect
+                    id={`mask-rect-${i}`}
+                    rx="var(--rx)"
+                    fill="white"
+                    y={0}
+                    x={0}
+                    style={{
+                      width: "calc(var(--full-size) + var(--full-screan-w))",
+                      height: "calc(var(--full-size) + var(--full-screan-h))",
+                      transform: `translate(calc(var(--translate-w) - var(--half-size) + var(--mouse-x)), calc(var(--translate-h) - var(--half-size) + var(--mouse-y))) rotateX(var(--rotate-x)) rotateY(var(--rotate-y))`,
+                      transformOrigin: "50% 50%",
+                      transformBox: "border-box",
+                    }}
+                  />
+                </mask>
+              </svg>
+            </div>
             <video
               id={`current-video-${i}`}
+              style={{
+                mask: `url(#mask-${i})`,
+              }}
               src={getVideoUrl(i)}
               className={`absolute top-0 left-0 w-full h-full object-cover object-center origin-center`}
               muted
