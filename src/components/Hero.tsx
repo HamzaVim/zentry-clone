@@ -24,6 +24,10 @@ function Hero() {
 
   // For how many videos are loaded
   const [videoLoaded, setVideoLoaded] = useState(0);
+
+  // For the current video
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   // NOTE: Functions: ---------------------------------------------------
 
   // Every 300ms check if mouse is active more than the time now.
@@ -45,6 +49,14 @@ function Hero() {
 
   // When the video is loaded, `videoLoaded` is incremented
   const handleLoadedData = () => setVideoLoaded((perv) => perv + 1);
+
+  // Get the next index of the current index
+  const getNextCurrentIndex = (index = currentIndex) =>
+    (index + 1) % totalVideos;
+
+  // Get the next index of the current index
+  const getPrevCurrentIndex = (index = currentIndex) =>
+    (index + 3) % totalVideos;
 
   // NOTE: Animations: ---------------------------------------------------
 
@@ -281,6 +293,42 @@ function Hero() {
   //   },
   //   { dependencies: [miniVidChangeAnimation] },
   // );
+
+  // Video order ---------------------------------------------------
+  useGSAP(
+    () => {
+      const nextCurrentIndex = getNextCurrentIndex();
+      const prevCurrentIndex = getPrevCurrentIndex();
+      Array.from({ length: totalVideos }, (_, i) => {
+        if (i === nextCurrentIndex) {
+          gsap.set(`#video-frame-${i}`, {
+            zIndex: 30,
+            display: "block",
+          });
+        } else if (i === currentIndex) {
+          gsap.set(`#video-frame-${i}`, {
+            zIndex: 20,
+            display: "block",
+          });
+        } else if (i === prevCurrentIndex) {
+          gsap.set(`#video-frame-${i}`, {
+            zIndex: 10,
+            display: "block",
+          });
+        } else {
+          gsap.set(
+            `#video-frame-${i}, #video-frame-${getNextCurrentIndex(currentIndex + 2)}`,
+            {
+              delay: animationLoaded ? 1.2 : 0,
+              zIndex: 0,
+              display: "none",
+            },
+          );
+        }
+      });
+    },
+    { dependencies: [currentIndex] },
+  );
 
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden">
