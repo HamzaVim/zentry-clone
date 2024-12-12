@@ -61,6 +61,13 @@ function Hero() {
   const getPrevCurrentIndex = (index = currentIndex) =>
     (index + 3) % totalVideos;
 
+  // Handle the click of the mini video to change the current video. Increase the index by 1
+  const handleMiniVidChange = () => {
+    if (miniVidChangeAnimation) return;
+    setMiniVidChangeAnimation(true);
+    setCurrentIndex(getNextCurrentIndex());
+  };
+
   // NOTE: Animations: ---------------------------------------------------
 
   // Timeline declarations: ---------------------------------------------------
@@ -389,6 +396,7 @@ function Hero() {
                 borderRadius: "var(--rx)",
               }}
               className="cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
+              onClick={handleMiniVidChange}
             >
               {/* NOTE: Div container that has svg for video mask and border */}
               <div
