@@ -77,7 +77,12 @@ function Hero() {
   useGSAP(() => {
     timelineMouseActiveRef.current = gsap.timeline();
     timelineHoverRef.current = gsap.timeline();
-    timelineMiniVidChangeRef.current = gsap.timeline();
+    timelineMiniVidChangeRef.current = gsap.timeline({
+      defaults: {
+        duration: 0,
+        ease: "none",
+      },
+    });
   });
 
   // When the `mask-container` is hovered ---------------------------------------------------
@@ -263,46 +268,102 @@ function Hero() {
   // );
 
   // Mini video when change it will increase the size of the mask to fill the screen ---------------------------------------------------
-  // useGSAP(
-  //   () => {
-  //     if (
-  //       !timelineHoverRef.current ||
-  //       !timelineMouseActiveRef.current ||
-  //       !animationLoaded ||
-  //       !timelineMiniVidChangeRef.current
-  //     )
-  //       return;
-  //     timelineMouseActiveRef.current.clear();
-  //     timelineHoverRef.current.clear();
-  //     timelineMiniVidChangeRef.current.clear();
-  //
-  //     if (miniVidChangeAnimation) {
-  //       timelineMiniVidChangeRef.current
-  //         .to("#mask-rect, #mask-border", {
-  //           overwrite: true,
-  //           duration: 0.2,
-  //           ease: "power1.out",
-  //           "--mouse-x": 0,
-  //           "--mouse-y": 0,
-  //           "--rotate-x": "0deg",
-  //           "--rotate-y": "0deg",
-  //           yoyo: false,
-  //           repeat: 0,
-  //         })
-  //         .to("#mask-rect, #mask-border", {
-  //           duration: 1,
-  //           ease: "power1.out",
-  //           "--full-screan-h": "101dvh",
-  //           "--full-screan-w": "102vw",
-  //           "--half-size": "0rem",
-  //           "--full-size": "0rem",
-  //           "--translate-w": "-1vw",
-  //           "--translate-h": "-1vh",
-  //         });
-  //     }
-  //   },
-  //   { dependencies: [miniVidChangeAnimation] },
-  // );
+  useGSAP(
+    () => {
+      if (
+        !timelineHoverRef.current ||
+        !timelineMouseActiveRef.current ||
+        !animationLoaded ||
+        !timelineMiniVidChangeRef.current ||
+        !miniVidChangeAnimation
+      )
+        return;
+      timelineMouseActiveRef.current.clear();
+      timelineHoverRef.current.clear();
+      timelineMiniVidChangeRef.current.clear();
+
+      const nextCurrentIndex = getNextCurrentIndex();
+      const prevCurrentIndex = getPrevCurrentIndex();
+
+      timelineMiniVidChangeRef.current
+        .to(`#mask-rect-${currentIndex}, #mask-border-${currentIndex}`, {
+          overwrite: true,
+          duration: 0.2,
+          ease: "power1.out",
+          "--mouse-x": 0,
+          "--mouse-y": 0,
+          "--rotate-x": "0deg",
+          "--rotate-y": "0deg",
+          yoyo: false,
+          repeat: 0,
+        })
+        .to(`#mask-rect-${currentIndex}, #mask-border-${currentIndex}`, {
+          duration: 1,
+          ease: "power1.out",
+          "--full-screan-h": "101dvh",
+          "--full-screan-w": "102vw",
+          "--half-size": "0rem",
+          "--full-size": "0rem",
+          "--translate-w": "-1vw",
+          "--translate-h": "-1vh",
+          onStart: () => {
+            videosRef.current[currentIndex].play();
+          },
+        })
+        .set(
+          `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+          {
+            "--full-screan-h": "0dvh",
+            "--full-screan-w": "0vw",
+            "--half-size": "0rem",
+            "--full-size": "0rem",
+            "--translate-w": "50vw",
+            "--translate-h": "50vh",
+            "--rx": "0.2rem",
+          },
+          "<",
+        )
+        .set(
+          `#mask-border-${nextCurrentIndex}`,
+          {
+            outlineWidth: 2,
+          },
+          "<",
+        )
+        .to(
+          `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+          {
+            duration: 1,
+            "--half-size": "9rem",
+            "--full-size": "18rem",
+            "--rx": "0.4rem",
+          },
+          "<",
+        )
+        .set(
+          `#mask-rect-${prevCurrentIndex}, #mask-border-${prevCurrentIndex}`,
+          {
+            "--full-screan-h": "0dvh",
+            "--full-screan-w": "0vw",
+            "--half-size": "0rem",
+            "--full-size": "0rem",
+            "--translate-w": "50vw",
+            "--translate-h": "50vh",
+            onComplete: () => {
+              videosRef.current[prevCurrentIndex].pause();
+              videosRef.current[prevCurrentIndex].currentTime = 0;
+            },
+          },
+        )
+        .to(`#mask-border-${prevCurrentIndex}`, {
+          outlineWidth: 0,
+          onComplete: () => {
+            setMiniVidChangeAnimation(false);
+          },
+        });
+    },
+    { dependencies: [miniVidChangeAnimation] },
+  );
 
   // Video order ---------------------------------------------------
   useGSAP(
