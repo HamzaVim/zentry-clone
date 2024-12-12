@@ -28,6 +28,9 @@ function Hero() {
   // For the current video
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // For the video ref
+  const videosRef = useRef<HTMLVideoElement[]>([]);
+
   // NOTE: Functions: ---------------------------------------------------
 
   // Every 300ms check if mouse is active more than the time now.
@@ -335,6 +338,7 @@ function Hero() {
 
   // Initial video state ---------------------------------------------------
   useGSAP(() => {
+    if (!videosRef.current) return;
     const nextCurrentIndex = getNextCurrentIndex();
 
     gsap.set(
@@ -354,6 +358,7 @@ function Hero() {
       "--translate-w": "-1vw",
       "--translate-h": "-1vh",
     });
+    videosRef.current[currentIndex].play();
   });
 
   return (
@@ -427,6 +432,7 @@ function Hero() {
                 mask: `url(#mask-${i})`,
               }}
               src={getVideoUrl(i)}
+              ref={(el) => (videosRef.current[i] = el!)}
               className={`absolute top-0 left-0 w-full h-full object-cover object-center origin-center`}
               muted
               loop
