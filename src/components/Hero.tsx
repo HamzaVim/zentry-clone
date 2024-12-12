@@ -316,14 +316,17 @@ function Hero() {
             display: "block",
           });
         } else {
-          gsap.set(
-            `#video-frame-${i}, #video-frame-${getNextCurrentIndex(currentIndex + 2)}`,
-            {
-              delay: animationLoaded ? 1.2 : 0,
-              zIndex: 0,
-              display: "none",
-            },
-          );
+          gsap.set(`#video-frame-${i}`, {
+            delay: animationLoaded ? 1.2 : 0,
+            zIndex: 0,
+            display: "none",
+          });
+          gsap.to(`#video-frame-${prevCurrentIndex}`, {
+            duration: 0,
+            delay: animationLoaded ? 1.2 : 0,
+            zIndex: 0,
+            display: "none",
+          });
         }
       });
     },
@@ -344,23 +347,21 @@ function Hero() {
       >
         {/* NOTE: An array of video frames */}
         {Array.from({ length: totalVideos }, (_, i) => (
-          <>
+          <div
+            className={`h-full w-full absolute top-0 left-0 rouded-lg`}
+            id={`video-frame-${i}`}
+            key={i}
+          >
             {/* NOTE: Div container that has svg for video mask and border */}
-            <div
-              className={`h-full w-full absolute top-0 left-0 rouded-lg`}
-              id={`video-frame-${i}`}
-              key={i}
-            >
-              <video
-                id={`current-video-${i}`}
-                src={getVideoUrl(i)}
-                className={`absolute top-0 left-0 w-full h-full object-cover object-center origin-center`}
-                muted
-                loop
-                onLoadedData={handleLoadedData}
-              />
-            </div>
-          </>
+            <video
+              id={`current-video-${i}`}
+              src={getVideoUrl(i)}
+              className={`absolute top-0 left-0 w-full h-full object-cover object-center origin-center`}
+              muted
+              loop
+              onLoadedData={handleLoadedData}
+            />
+          </div>
         ))}
       </div>
     </div>
