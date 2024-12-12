@@ -22,6 +22,8 @@ function Hero() {
   // When the mini video (mask) clicked all animation stops.
   const [miniVidChangeAnimation, setMiniVidChangeAnimation] = useState(false);
 
+  // For how many videos are loaded
+  const [videoLoaded, setVideoLoaded] = useState(0);
   // NOTE: Functions: ---------------------------------------------------
 
   // Every 300ms check if mouse is active more than the time now.
@@ -40,6 +42,9 @@ function Hero() {
 
   // Get the video url
   const getVideoUrl = (index: number) => `videos/hero-${index + 1}.mp4`;
+
+  // When the video is loaded, `videoLoaded` is incremented
+  const handleLoadedData = () => setVideoLoaded((perv) => perv + 1);
 
   // NOTE: Animations: ---------------------------------------------------
 
@@ -304,6 +309,7 @@ function Hero() {
                 className={`absolute top-0 left-0 w-full h-full object-cover object-center origin-center`}
                 muted
                 loop
+                onLoadedData={handleLoadedData}
               />
             </div>
           </>
