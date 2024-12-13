@@ -195,85 +195,102 @@ function Hero() {
   // );
 
   // When the mouse is active/not active ---------------------------------------------------
-  // useGSAP(
-  //   () => {
-  //     if (
-  //       !timelineMouseActiveRef.current ||
-  //       !timelineHoverRef.current ||
-  //       maskHover ||
-  //       !animationLoaded ||
-  //       miniVidChangeAnimation
-  //     )
-  //       return;
-  //
-  //     timelineHoverRef.current.clear();
-  //
-  //     if (mouseActive) {
-  //       const active = timelineMouseActiveRef.current.isActive();
-  //       timelineMouseActiveRef.current.clear();
-  //       if (active) {
-  //         timelineMouseActiveRef.current.to("#mask-rect, #mask-border", {
-  //           duration: 1,
-  //           ease: "none",
-  //           "--full-size": "18rem",
-  //           "--half-size": "9rem",
-  //           "--rx": "0.4rem",
-  //           outlineWidth: 2,
-  //         });
-  //       } else {
-  //         timelineMouseActiveRef.current
-  //           .to("#mask-border", {
-  //             overwrite: true,
-  //             duration: 0,
-  //             ease: "none",
-  //             outlineWidth: 2,
-  //           })
-  //           .to("#mask-rect, #mask-border", {
-  //             duration: 0,
-  //             ease: "none",
-  //             "--rx": "0.1rem",
-  //           })
-  //           .to("#mask-rect, #mask-border", {
-  //             duration: 1,
-  //             ease: "none",
-  //             "--full-size": "18rem",
-  //             "--half-size": "9rem",
-  //             "--rx": "0.4rem",
-  //           });
-  //       }
-  //     } else {
-  //       timelineMouseActiveRef.current.clear();
-  //       timelineMouseActiveRef.current
-  //         .to("#mask-rect, #mask-border", {
-  //           overwrite: true,
-  //           duration: 1,
-  //           ease: "power1.out",
-  //           "--full-size": "6rem",
-  //           "--half-size": "3rem",
-  //           "--rx": "0.4rem",
-  //           outlineWidth: 2,
-  //         })
-  //         .to(
-  //           "#mask-rect, #mask-border",
-  //           {
-  //             duration: 1,
-  //             ease: "none",
-  //             "--full-size": "0rem",
-  //             "--half-size": "0rem",
-  //             "--rx": "0.1rem",
-  //           },
-  //           "-=0.2",
-  //         )
-  //         .to("#mask-rect, #mask-border", {
-  //           duration: 0,
-  //           ease: "none",
-  //           outlineWidth: 0,
-  //           "--rx": "0rem",
-  //         });
-  //     }
-  //   },
-  //   { dependencies: [mouseActive] },
-  // );
+  useGSAP(
+    () => {
+      if (
+        !timelineMouseActiveRef.current ||
+        !timelineHoverRef.current ||
+        maskHover ||
+        !animationLoaded ||
+        miniVidChangeAnimation
+      )
+        return;
+
+      timelineHoverRef.current.clear();
+
+      const { nextCurrentIndex } = getPrevNextCurrentIndex();
+
+      if (mouseActive) {
+        const active = timelineMouseActiveRef.current.isActive();
+        timelineMouseActiveRef.current.clear();
+        if (active) {
+          timelineMouseActiveRef.current.to(
+            `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+            {
+              duration: 1,
+              ease: "none",
+              "--full-size": "18rem",
+              "--half-size": "9rem",
+              "--rx": "0.4rem",
+              outlineWidth: 2,
+            },
+          );
+        } else {
+          timelineMouseActiveRef.current
+            .to(`#mask-border-${nextCurrentIndex}`, {
+              overwrite: true,
+              duration: 0,
+              ease: "none",
+              outlineWidth: 2,
+            })
+            .to(
+              `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+              {
+                duration: 0,
+                ease: "none",
+                "--rx": "0.1rem",
+              },
+            )
+            .to(
+              `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+              {
+                duration: 1,
+                ease: "none",
+                "--full-size": "18rem",
+                "--half-size": "9rem",
+                "--rx": "0.4rem",
+              },
+            );
+        }
+      } else {
+        timelineMouseActiveRef.current.clear();
+        timelineMouseActiveRef.current
+          .to(
+            `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+            {
+              overwrite: true,
+              duration: 1,
+              ease: "power1.out",
+              "--full-size": "6rem",
+              "--half-size": "3rem",
+              "--rx": "0.4rem",
+              outlineWidth: 2,
+            },
+          )
+          .to(
+            `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+            {
+              duration: 1,
+              ease: "none",
+              "--full-size": "0rem",
+              "--half-size": "0rem",
+              "--rx": "0.1rem",
+            },
+            "-=0.2",
+          )
+          .to(
+            `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+            {
+              duration: 0,
+              ease: "none",
+              outlineWidth: 0,
+              "--rx": "0rem",
+            },
+          );
+      }
+    },
+    { dependencies: [mouseActive, miniVidChangeAnimation] },
+  );
 
   // Mini video when change it will increase the size of the mask to fill the screen ---------------------------------------------------
   useGSAP(
@@ -293,6 +310,9 @@ function Hero() {
       const { nextCurrentIndex, prevCurrentIndex } = getPrevNextCurrentIndex();
 
       timelineMiniVidChangeRef.current
+        .set(`#mask-border-${currentIndex}`, {
+          outlineWidth: 2,
+        })
         .to(`#mask-rect-${currentIndex}, #mask-border-${currentIndex}`, {
           overwrite: true,
           duration: 0.2,
@@ -301,6 +321,9 @@ function Hero() {
           "--mouse-y": 0,
           "--rotate-x": "0deg",
           "--rotate-y": "0deg",
+          "--half-size": "9rem",
+          "--full-size": "18rem",
+          "--rx": "0.4rem",
           yoyo: false,
           repeat: 0,
         })
