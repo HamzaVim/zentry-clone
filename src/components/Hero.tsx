@@ -100,7 +100,8 @@ function Hero() {
         !timelineHoverRef.current ||
         !timelineMouseActiveRef.current ||
         !animationLoaded ||
-        !timelineMiniVidChangeRef.current
+        !timelineMiniVidChangeRef.current ||
+        miniVidChangeAnimation
       )
         return;
       timelineMouseActiveRef.current.clear();
