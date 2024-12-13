@@ -1,6 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useInterval } from "usehooks-ts";
 
 function Hero() {
@@ -30,6 +30,9 @@ function Hero() {
 
   // For the video ref
   const videosRef = useRef<HTMLVideoElement[]>([]);
+
+  // For the video frame ref
+  const videoFrameRef = useRef<HTMLDivElement[]>([]);
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -151,60 +154,65 @@ function Hero() {
     { dependencies: [maskHover, miniVidChangeAnimation] },
   );
 
-  // Parallax Effect for `mask-rect` & `mask-border` ---------------------------------------------------
-  const heroRef = useRef<HTMLDivElement>(null);
-  // const { contextSafe } = useGSAP();
-  //
-  // const handleMouseMove = useCallback(
-  //   contextSafe((e: MouseEvent) => {
-  //     // Get the mouse position
-  //     const x = e.clientX;
-  //     const y = e.clientY;
-  //
-  //     // Get the middle of the screen / object
-  //     const middleX = window.innerWidth / 2;
-  //     const middleY = window.innerHeight / 2;
-  //
-  //     // Get offset from middle
-  //     const offsetX = x - middleX;
-  //     const offsetY = y - middleY;
-  //
-  //     // For mouse movement
-  //     const mouseX = offsetX * 0.2;
-  //     const mouseY = offsetY * 0.2;
-  //
-  //     // For parallax effect
-  //     const parallaxY = (offsetX / middleX) * 45;
-  //     const parallaxX = (offsetY / middleY) * 45;
-  //
-  //     gsap.to("#mask-rect, #mask-border", {
-  //       overwrite: "auto",
-  //       duration: 0,
-  //       ease: "none",
-  //       "--mouse-x": mouseX,
-  //       "--mouse-y": mouseY,
-  //       "--rotate-x": `${-1 * parallaxX}deg`,
-  //       "--rotate-y": `${parallaxY}deg`,
-  //     });
-  //   }),
-  //   [],
-  // );
-  // useGSAP(
-  //   () => {
-  //     if (!heroRef.current) return;
-  //
-  //     if (!miniVidChangeAnimation) {
-  //       heroRef.current.addEventListener("mousemove", handleMouseMove);
-  //     } else {
-  //       heroRef.current.removeEventListener("mousemove", handleMouseMove);
-  //     }
-  //
-  //     return () => {
-  //       heroRef.current?.removeEventListener("mousemove", handleMouseMove);
-  //     };
-  //   },
-  //   { dependencies: [miniVidChangeAnimation] },
-  // );
+  // Tilt Effect for `mask-rect` & `mask-border` ---------------------------------------------------
+
+  useGSAP(
+    (context, contextSafe) => {
+      if (!videoFrameRef.current) return;
+
+      const handleMouseMove = contextSafe(
+        (e: MouseEvent, nextCurrentIndex: number) => {
+          // Get the mouse position
+          const x = e.clientX;
+          const y = e.clientY;
+
+          // Get the middle of the screen / object
+          const middleX = window.innerWidth / 2;
+          const middleY = window.innerHeight / 2;
+
+          // Get offset from middle
+          const offsetX = x - middleX;
+          const offsetY = y - middleY;
+
+          // For mouse movement
+          const mouseX = offsetX * 0.2;
+          const mouseY = offsetY * 0.2;
+
+          // For parallax effect
+          const parallaxY = (offsetX / middleX) * 45;
+          const parallaxX = (offsetY / middleY) * 45;
+
+          gsap.to(
+            `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+            {
+              overwrite: "auto",
+              duration: 0.5,
+              ease: "none",
+              "--mouse-x": mouseX,
+              "--mouse-y": mouseY,
+              "--rotate-x": `${-1 * parallaxX}deg`,
+              "--rotate-y": `${parallaxY}deg`,
+            },
+          );
+        },
+      );
+
+      const { nextCurrentIndex } = getPrevNextCurrentIndex();
+
+      videoFrameRef.current[nextCurrentIndex].addEventListener(
+        "mousemove",
+        (e) => handleMouseMove(e, nextCurrentIndex),
+      );
+
+      return () => {
+        videoFrameRef.current[nextCurrentIndex]?.removeEventListener(
+          "mousemove",
+          (e) => handleMouseMove(e, nextCurrentIndex),
+        );
+      };
+    },
+    { dependencies: [miniVidChangeAnimation] },
+  );
 
   // When the mouse is active/not active ---------------------------------------------------
   useGSAP(
@@ -466,7 +474,6 @@ function Hero() {
     <div className="relative min-h-screen w-screen overflow-x-hidden">
       {/* NOTE: the container of all the videos. */}
       <div
-        ref={heroRef}
         className="h-dvh w-screen absolute top-0 left-0"
         onMouseMove={() => {
           if (!animationLoaded) setAnimationLoaded(true);
@@ -480,6 +487,11 @@ function Hero() {
             className={`h-full w-full absolute top-0 left-0 rouded-lg`}
             id={`video-frame-${i}`}
             key={i}
+            ref={(el) => {
+              if (el) {
+                videoFrameRef.current[i] = el;
+              }
+            }}
           >
             {/* NOTE: Div container that has svg for video mask and border */}
             <div
