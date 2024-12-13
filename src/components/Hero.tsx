@@ -94,50 +94,61 @@ function Hero() {
   });
 
   // When the `mask-container` is hovered ---------------------------------------------------
-  // useGSAP(
-  //   () => {
-  //     if (
-  //       !timelineHoverRef.current ||
-  //       !timelineMouseActiveRef.current ||
-  //       !animationLoaded ||
-  //       !timelineMiniVidChangeRef.current
-  //     )
-  //       return;
-  //     timelineMouseActiveRef.current.clear();
-  //     timelineHoverRef.current.clear();
-  //     timelineMiniVidChangeRef.current.clear();
-  //
-  //     if (maskHover) {
-  //       timelineHoverRef.current
-  //         .to("#mask-rect, #mask-border", {
-  //           duration: 0.5,
-  //           ease: "none",
-  //           "--full-size": "18rem",
-  //           "--half-size": "9rem",
-  //           "--rx": "0.4rem",
-  //         })
-  //         .to("#mask-rect, #mask-border", {
-  //           duration: 0.7,
-  //           ease: "power1.inOut",
-  //           "--full-size": "19.5rem",
-  //           "--half-size": "9.75rem",
-  //           yoyo: true,
-  //           repeat: -1,
-  //         });
-  //     } else {
-  //       timelineHoverRef.current.to("#mask-rect, #mask-border", {
-  //         overwrite: true,
-  //         duration: 0.7,
-  //         ease: "none",
-  //         "--full-size": "18rem",
-  //         "--half-size": "9rem",
-  //         yoyo: false,
-  //         repeat: 0,
-  //       });
-  //     }
-  //   },
-  //   { dependencies: [maskHover] },
-  // );
+  useGSAP(
+    () => {
+      if (
+        !timelineHoverRef.current ||
+        !timelineMouseActiveRef.current ||
+        !animationLoaded ||
+        !timelineMiniVidChangeRef.current
+      )
+        return;
+      timelineMouseActiveRef.current.clear();
+      timelineHoverRef.current.clear();
+      timelineMiniVidChangeRef.current.clear();
+
+      const { nextCurrentIndex } = getPrevNextCurrentIndex();
+
+      if (maskHover) {
+        timelineHoverRef.current
+          .to(
+            `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+            {
+              duration: 0.5,
+              ease: "none",
+              "--full-size": "18rem",
+              "--half-size": "9rem",
+              "--rx": "0.4rem",
+            },
+          )
+          .to(
+            `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+            {
+              duration: 0.7,
+              ease: "power1.inOut",
+              "--full-size": "20rem",
+              "--half-size": "10rem",
+              yoyo: true,
+              repeat: -1,
+            },
+          );
+      } else {
+        timelineHoverRef.current.to(
+          `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+          {
+            overwrite: true,
+            duration: 0.7,
+            ease: "none",
+            "--full-size": "18rem",
+            "--half-size": "9rem",
+            yoyo: false,
+            repeat: 0,
+          },
+        );
+      }
+    },
+    { dependencies: [maskHover, miniVidChangeAnimation] },
+  );
 
   // Parallax Effect for `mask-rect` & `mask-border` ---------------------------------------------------
   const heroRef = useRef<HTMLDivElement>(null);
@@ -437,17 +448,7 @@ function Hero() {
   // Initial video state ---------------------------------------------------
   useGSAP(() => {
     if (!videosRef.current) return;
-    const { nextCurrentIndex } = getPrevNextCurrentIndex();
 
-    gsap.set(
-      `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
-      {
-        "--full-size": "18rem",
-        "--half-size": "9rem",
-        "--rx": "0.4rem",
-        outlineWidth: 2,
-      },
-    );
     gsap.set(`#mask-rect-${currentIndex}, #mask-border-${currentIndex}`, {
       "--full-screan-h": "101dvh",
       "--full-screan-w": "102vw",
@@ -456,6 +457,7 @@ function Hero() {
       "--translate-w": "-1vw",
       "--translate-h": "-1vh",
     });
+
     videosRef.current[currentIndex].play();
   });
 
@@ -488,6 +490,12 @@ function Hero() {
               }}
               className="cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
               onClick={handleMiniVidChange}
+              onMouseEnter={() => {
+                setMaskHover(true);
+              }}
+              onMouseLeave={() => {
+                setMaskHover(false);
+              }}
             >
               {/* NOTE: Div container that has svg for video mask and border */}
               <div
