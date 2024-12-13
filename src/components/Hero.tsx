@@ -61,6 +61,14 @@ function Hero() {
   const getPrevCurrentIndex = (index = currentIndex) =>
     (index + 3) % totalVideos;
 
+  // Get the next & prev index of the current index
+  const getPrevNextCurrentIndex = () => {
+    return {
+      nextCurrentIndex: getNextCurrentIndex(),
+      prevCurrentIndex: getPrevCurrentIndex(),
+    };
+  };
+
   // Handle the click of the mini video to change the current video. Increase the index by 1
   const handleMiniVidChange = () => {
     if (miniVidChangeAnimation) return;
@@ -282,8 +290,7 @@ function Hero() {
       timelineHoverRef.current.clear();
       timelineMiniVidChangeRef.current.clear();
 
-      const nextCurrentIndex = getNextCurrentIndex();
-      const prevCurrentIndex = getPrevCurrentIndex();
+      const { nextCurrentIndex, prevCurrentIndex } = getPrevNextCurrentIndex();
 
       timelineMiniVidChangeRef.current
         .to(`#mask-rect-${currentIndex}, #mask-border-${currentIndex}`, {
@@ -368,8 +375,8 @@ function Hero() {
   // Video order ---------------------------------------------------
   useGSAP(
     () => {
-      const nextCurrentIndex = getNextCurrentIndex();
-      const prevCurrentIndex = getPrevCurrentIndex();
+      const { nextCurrentIndex, prevCurrentIndex } = getPrevNextCurrentIndex();
+
       Array.from({ length: totalVideos }, (_, i) => {
         if (i === nextCurrentIndex) {
           gsap.set(`#video-frame-${i}`, {
@@ -407,7 +414,7 @@ function Hero() {
   // Initial video state ---------------------------------------------------
   useGSAP(() => {
     if (!videosRef.current) return;
-    const nextCurrentIndex = getNextCurrentIndex();
+    const { nextCurrentIndex } = getPrevNextCurrentIndex();
 
     gsap.set(
       `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
