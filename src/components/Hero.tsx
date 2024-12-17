@@ -31,8 +31,8 @@ function Hero() {
   // For the video ref
   const videosRef = useRef<HTMLVideoElement[]>([]);
 
-  // For the video frame ref
-  const videoFrameRef = useRef<HTMLDivElement[]>([]);
+  // For the hero ref
+  const heroRef = useRef<HTMLDivElement>(null);
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -155,10 +155,9 @@ function Hero() {
   );
 
   // Tilt Effect for `mask-rect` & `mask-border` ---------------------------------------------------
-
   useGSAP(
     (context, contextSafe) => {
-      if (!videoFrameRef.current) return;
+      if (!heroRef.current) return;
 
       const handleMouseMove = contextSafe(
         (e: MouseEvent, nextCurrentIndex: number) => {
@@ -199,15 +198,19 @@ function Hero() {
 
       const { nextCurrentIndex } = getPrevNextCurrentIndex();
 
-      videoFrameRef.current[nextCurrentIndex].addEventListener(
-        "mousemove",
-        (e) => handleMouseMove(e, nextCurrentIndex),
-      );
+      if (miniVidChangeAnimation) {
+        heroRef.current.addEventListener("mousemove", (e) =>
+          handleMouseMove(e, nextCurrentIndex),
+        );
+      } else {
+        heroRef.current.removeEventListener("mousemove", (e) =>
+          handleMouseMove(e, nextCurrentIndex),
+        );
+      }
 
       return () => {
-        videoFrameRef.current[nextCurrentIndex]?.removeEventListener(
-          "mousemove",
-          (e) => handleMouseMove(e, nextCurrentIndex),
+        heroRef.current?.removeEventListener("mousemove", (e) =>
+          handleMouseMove(e, nextCurrentIndex),
         );
       };
     },
@@ -480,6 +483,7 @@ function Hero() {
           setMouseActiveTime(Date.now());
           setMouseActive(true);
         }}
+        ref={heroRef}
       >
         {/* NOTE: An array of video frames */}
         {Array.from({ length: totalVideos }, (_, i) => (
@@ -487,11 +491,6 @@ function Hero() {
             className={`h-full w-full absolute top-0 left-0 rouded-lg`}
             id={`video-frame-${i}`}
             key={i}
-            ref={(el) => {
-              if (el) {
-                videoFrameRef.current[i] = el;
-              }
-            }}
           >
             {/* NOTE: Div container that has svg for video mask and border */}
             <div
