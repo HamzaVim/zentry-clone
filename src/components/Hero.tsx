@@ -1,6 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useInterval } from "usehooks-ts";
 
 function Hero() {
@@ -155,67 +155,59 @@ function Hero() {
   );
 
   // Tilt Effect for `mask-rect` & `mask-border` ---------------------------------------------------
-  useGSAP(
-    (context, contextSafe) => {
-      if (!heroRef.current) return;
-
-      const handleMouseMove = contextSafe(
-        (e: MouseEvent, nextCurrentIndex: number) => {
-          // Get the mouse position
-          const x = e.clientX;
-          const y = e.clientY;
-
-          // Get the middle of the screen / object
-          const middleX = window.innerWidth / 2;
-          const middleY = window.innerHeight / 2;
-
-          // Get offset from middle
-          const offsetX = x - middleX;
-          const offsetY = y - middleY;
-
-          // For mouse movement
-          const mouseX = offsetX * 0.2;
-          const mouseY = offsetY * 0.2;
-
-          // For parallax effect
-          const parallaxY = (offsetX / middleX) * 45;
-          const parallaxX = (offsetY / middleY) * 45;
-
-          gsap.to(
-            `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
-            {
-              overwrite: "auto",
-              duration: 0.5,
-              ease: "none",
-              "--mouse-x": mouseX,
-              "--mouse-y": mouseY,
-              "--rotate-x": `${-1 * parallaxX}deg`,
-              "--rotate-y": `${parallaxY}deg`,
-            },
-          );
-        },
-      );
-
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
       const { nextCurrentIndex } = getPrevNextCurrentIndex();
 
-      if (miniVidChangeAnimation) {
-        heroRef.current.addEventListener("mousemove", (e) =>
-          handleMouseMove(e, nextCurrentIndex),
-        );
-      } else {
-        heroRef.current.removeEventListener("mousemove", (e) =>
-          handleMouseMove(e, nextCurrentIndex),
-        );
-      }
+      // Get the mouse position
+      const x = e.clientX;
+      const y = e.clientY;
 
-      return () => {
-        heroRef.current?.removeEventListener("mousemove", (e) =>
-          handleMouseMove(e, nextCurrentIndex),
-        );
-      };
+      // Get the middle of the screen / object
+      const middleX = window.innerWidth / 2;
+      const middleY = window.innerHeight / 2;
+
+      // Get offset from middle
+      const offsetX = x - middleX;
+      const offsetY = y - middleY;
+
+      // For mouse movement
+      const mouseX = offsetX * 0.2;
+      const mouseY = offsetY * 0.2;
+
+      // For parallax effect
+      const parallaxY = (offsetX / middleX) * 45;
+      const parallaxX = (offsetY / middleY) * 45;
+
+      gsap.to(
+        `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+        {
+          overwrite: "auto",
+          duration: 0.5,
+          ease: "none",
+          "--mouse-x": mouseX,
+          "--mouse-y": mouseY,
+          "--rotate-x": `${-1 * parallaxX}deg`,
+          "--rotate-y": `${parallaxY}deg`,
+        },
+      );
     },
-    { dependencies: [miniVidChangeAnimation] },
+    [currentIndex],
   );
+
+  useEffect(() => {
+    if (!heroRef.current) return;
+
+    if (!miniVidChangeAnimation) {
+      heroRef.current.addEventListener("mousemove", handleMouseMove);
+    } else {
+      heroRef.current.removeEventListener("mousemove", handleMouseMove);
+    }
+
+    return () => {
+      heroRef.current?.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [miniVidChangeAnimation, handleMouseMove]);
 
   // When the mouse is active/not active ---------------------------------------------------
   useGSAP(
