@@ -2,6 +2,8 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInterval } from "usehooks-ts";
+import Button from "./Button";
+import HeroArrow from "./svgs/HeroArrow";
 
 function Hero() {
   // NOTE: The total number of videos
@@ -486,6 +488,12 @@ function Hero() {
             <br />
             Unleash the Play Economy
           </p>
+          <Button
+            title={"watch trailer"}
+            bgClass={"bg-accentColor"}
+            containerClass={"w-56 h-14"}
+            LeftIcon={HeroArrow}
+          />
         </div>
         <div className="w-fit absolute bottom-14 right-0 pr-12 z-40 select-none pointer-events-none">
           <h1 className="hero-heading font-zentry special-font">
