@@ -466,7 +466,7 @@ function Hero() {
   });
 
   return (
-    <div className="relative min-h-screen w-screen overflow-x-hidden">
+    <div className="relative min-h-screen w-screen overflow-hidden">
       {/* NOTE: the container of all the videos. */}
       <div
         className="h-dvh w-screen absolute top-0 left-0"
@@ -477,6 +477,21 @@ function Hero() {
         }}
         ref={heroRef}
       >
+        <div className="w-fit absolute top-36 flex flex-col gap-8 pl-12 z-40 select-none pointer-events-none">
+          <h1 className="hero-heading font-zentry special-font">
+            redefi<b>n</b>e
+          </h1>
+          <p className="paragraph text-textColor">
+            Enter the Metagame
+            <br />
+            Unleash the Play Economy
+          </p>
+        </div>
+        <div className="w-fit absolute bottom-14 right-0 pr-12 z-40 select-none pointer-events-none">
+          <h1 className="hero-heading font-zentry special-font">
+            g<b>a</b>ming
+          </h1>
+        </div>
         {/* NOTE: An array of video frames */}
         {Array.from({ length: totalVideos }, (_, i) => (
           <div
@@ -551,6 +566,11 @@ function Hero() {
             />
           </div>
         ))}
+      </div>
+      <div className="w-fit absolute bottom-14 right-0 pr-12 z-0 select-none pointer-events-none">
+        <h1 className="hero-heading font-zentry special-font text-textColorInverted">
+          g<b>a</b>ming
+        </h1>
       </div>
     </div>
   );
