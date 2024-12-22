@@ -6,6 +6,7 @@ function App() {
     <>
       <main className="text-3xl">
         <Hero />
+        <div className="w-full h-dvh" />
       </main>
     </>
   );

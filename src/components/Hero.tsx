@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useInterval } from "usehooks-ts";
 import Button from "./Button";
 import HeroArrow from "./svgs/HeroArrow";
+import { ScrollTrigger } from "gsap/all";
 
 function Hero() {
   // NOTE: The total number of videos
@@ -35,6 +36,12 @@ function Hero() {
 
   // For the hero ref
   const heroRef = useRef<HTMLDivElement>(null);
+
+  // When the user scroll
+  const [scrolled, setScrolled] = useState(false);
+
+  // When the user scrolled did it animated?
+  const [scrolledAnimated, setScrolledAnimated] = useState(false);
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -76,7 +83,7 @@ function Hero() {
 
   // Handle the click of the mini video to change the current video. Increase the index by 1
   const handleMiniVidChange = () => {
-    if (miniVidChangeAnimation) return;
+    if (miniVidChangeAnimation || scrolled) return;
     setMiniVidChangeAnimation(true);
     setCurrentIndex(getNextCurrentIndex());
   };
@@ -106,7 +113,8 @@ function Hero() {
         !timelineMouseActiveRef.current ||
         !animationLoaded ||
         !timelineMiniVidChangeRef.current ||
-        miniVidChangeAnimation
+        miniVidChangeAnimation ||
+        scrolledAnimated
       )
         return;
       timelineMouseActiveRef.current.clear();
@@ -115,8 +123,14 @@ function Hero() {
 
       const { nextCurrentIndex } = getPrevNextCurrentIndex();
 
-      if (maskHover) {
+      if (maskHover && !scrolled) {
         timelineHoverRef.current
+          .set(
+            `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
+            {
+              outlineWidth: 2,
+            },
+          )
           .to(
             `#mask-rect-${nextCurrentIndex}, #mask-border-${nextCurrentIndex}`,
             {
@@ -153,12 +167,14 @@ function Hero() {
         );
       }
     },
-    { dependencies: [maskHover, miniVidChangeAnimation] },
+    { dependencies: [maskHover, miniVidChangeAnimation, scrolled] },
   );
 
   // Tilt Effect for `mask-rect` & `mask-border` ---------------------------------------------------
+  const { contextSafe } = useGSAP();
+
   const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
+    contextSafe((e: MouseEvent) => {
       const { nextCurrentIndex } = getPrevNextCurrentIndex();
 
       // Get the mouse position
@@ -193,14 +209,14 @@ function Hero() {
           "--rotate-y": `${parallaxY}deg`,
         },
       );
-    },
+    }),
     [currentIndex],
   );
 
   useEffect(() => {
     if (!heroRef.current) return;
 
-    if (!miniVidChangeAnimation) {
+    if (!miniVidChangeAnimation && !scrolled) {
       heroRef.current.addEventListener("mousemove", handleMouseMove);
     } else {
       heroRef.current.removeEventListener("mousemove", handleMouseMove);
@@ -209,7 +225,7 @@ function Hero() {
     return () => {
       heroRef.current?.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [miniVidChangeAnimation, handleMouseMove]);
+  }, [miniVidChangeAnimation, handleMouseMove, scrolled]);
 
   // When the mouse is active/not active ---------------------------------------------------
   useGSAP(
@@ -217,9 +233,10 @@ function Hero() {
       if (
         !timelineMouseActiveRef.current ||
         !timelineHoverRef.current ||
-        maskHover ||
+        (maskHover && !scrolled) ||
         !animationLoaded ||
-        miniVidChangeAnimation
+        miniVidChangeAnimation ||
+        scrolledAnimated
       )
         return;
 
@@ -227,7 +244,7 @@ function Hero() {
 
       const { nextCurrentIndex } = getPrevNextCurrentIndex();
 
-      if (mouseActive) {
+      if (mouseActive && !scrolled) {
         const active = timelineMouseActiveRef.current.isActive();
         timelineMouseActiveRef.current.clear();
         if (active) {
@@ -282,6 +299,10 @@ function Hero() {
               "--half-size": "3rem",
               "--rx": "0.4rem",
               outlineWidth: 2,
+              onStart: () => {
+                if (!scrolled) return;
+                setScrolledAnimated(true);
+              },
             },
           )
           .to(
@@ -306,7 +327,7 @@ function Hero() {
           );
       }
     },
-    { dependencies: [mouseActive, miniVidChangeAnimation] },
+    { dependencies: [mouseActive, miniVidChangeAnimation, scrolled] },
   );
 
   // Mini video when change it will increase the size of the mask to fill the screen ---------------------------------------------------
@@ -467,6 +488,38 @@ function Hero() {
     videosRef.current[currentIndex].play();
   });
 
+  gsap.registerPlugin(ScrollTrigger);
+  useEffect(() => {
+    if (!heroRef.current) return;
+    gsap.set(heroRef.current, {
+      clipPath: "polygon(0 0, 100% 0, 100% 100%, -4% 100%)",
+      borderRadius: "0.4rem",
+    });
+    gsap
+      .timeline({
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          toggleActions: "play pause reverse reset",
+          scrub: true,
+          onEnter: () => {
+            setScrolled(true);
+          },
+          onLeaveBack: () => {
+            setScrolled(false);
+            setScrolledAnimated(false);
+          },
+        },
+      })
+      .to(heroRef.current, {
+        clipPath: "polygon(20% 0, 75% 0, 90% 90%, -4% 100%)",
+      })
+      .to(heroRef.current, {
+        clipPath: "polygon(20% 0, 75% 0, 85% 85%, -4% 75%)",
+      });
+  }, []);
+
   return (
     <div className="relative min-h-screen w-screen overflow-hidden">
       {/* NOTE: the container of all the videos. */}
@@ -474,6 +527,7 @@ function Hero() {
         className="h-dvh w-screen absolute top-0 left-0"
         onMouseMove={() => {
           if (!animationLoaded) setAnimationLoaded(true);
+          if (scrolled) return;
           setMouseActiveTime(Date.now());
           setMouseActive(true);
         }}
@@ -515,7 +569,7 @@ function Hero() {
                 height: "var(--container-full-size)",
                 borderRadius: "var(--rx)",
               }}
-              className="cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
+              className={`${scrolled ? "" : "cursor-pointer"} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50`}
               onClick={handleMiniVidChange}
               onMouseEnter={() => {
                 setMaskHover(true);
@@ -575,7 +629,7 @@ function Hero() {
           </div>
         ))}
       </div>
-      <div className="w-fit absolute bottom-14 right-0 pr-12 z-0 select-none pointer-events-none">
+      <div className="w-fit absolute bottom-14 right-0 pr-12 -z-10 select-none pointer-events-none">
         <h1 className="hero-heading font-zentry special-font text-textColorInverted">
           g<b>a</b>ming
         </h1>
