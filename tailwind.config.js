@@ -9,6 +9,7 @@ export default {
         general: ["general", "sans-serif"],
         "robert-medium": ["robert-medium", "sans-serif"],
         "robert-regular": ["robert-regular", "sans-serif"],
+        "roboto-mono": ["roboto-mono", "sans-serif"],
       },
       colors: {
         bgColor: "#DFDFF2",

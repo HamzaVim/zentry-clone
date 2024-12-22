@@ -166,14 +166,16 @@ function Button({
       onMouseEnter={() => setButtonHovered(true)}
       onMouseLeave={() => setButtonHovered(false)}
       ref={buttonRef}
-      className={`relative paragraph z-50 font-robert-regular text-black font-bold flex justify-center items-center gap-2 pointer-events-auto ${containerClass}`}
+      className={`relative z-50 flex justify-center items-center gap-2 pointer-events-auto ${containerClass}`}
     >
       <div
         ref={bgButtonRef}
         className={`w-full h-full absolute z-0 rounded-[2rem] ${bgClass}`}
       />
       {LeftIcon && <LeftIcon />}
-      <span className="relative block z-10 animation">{title}</span>
+      <span className=" font-roboto-mono text-black font-bold uppercase relative block z-10 animation">
+        {title}
+      </span>
       {RightIcon && <RightIcon />}
     </button>
   );

@@ -545,7 +545,7 @@ function Hero() {
           <Button
             title={"watch trailer"}
             bgClass={"bg-accentColor"}
-            containerClass={"w-56 h-14"}
+            containerClass={"w-60 h-14 text-base tracking-widest "}
             LeftIcon={HeroArrow}
             scrolled={scrolled}
           />
