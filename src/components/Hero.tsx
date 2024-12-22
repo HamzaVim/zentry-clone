@@ -547,6 +547,7 @@ function Hero() {
             bgClass={"bg-accentColor"}
             containerClass={"w-56 h-14"}
             LeftIcon={HeroArrow}
+            scrolled={scrolled}
           />
         </div>
         <div className="w-fit absolute bottom-14 right-0 pr-12 z-40 select-none pointer-events-none">

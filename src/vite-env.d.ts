@@ -7,4 +7,5 @@ interface CustomButtonProps {
   bgClass: string;
   containerClass: string;
   comeingSoon?: boolean;
+  scrolled?: boolean;
 }

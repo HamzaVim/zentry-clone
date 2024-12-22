@@ -1,6 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 function Button({
   title,
@@ -9,6 +9,7 @@ function Button({
   bgClass,
   containerClass,
   comeingSoon,
+  scrolled,
 }: CustomButtonProps) {
   // NOTE: States & Refs: ---------------------------------------------------
 
@@ -29,30 +30,40 @@ function Button({
 
   // NOTE: Animation: ---------------------------------------------------
 
-  useGSAP(
-    (context, contextSafe) => {
-      if (!bgButtonRef.current || !buttonRef.current || !timelineRef.current)
-        return;
+  const { contextSafe } = useGSAP();
 
-      // For mouse movement
-      const handleMouseMove = contextSafe((e: MouseEvent) => {
-        if (!buttonRef.current) return;
+  // For mouse movement
+  const handleMouseMove = useCallback(
+    contextSafe((e: MouseEvent) => {
+      if (!buttonRef.current) return;
 
-        // Get the mouse position
-        const x = e.clientX;
+      // Get the mouse position
+      const x = e.clientX;
 
-        // For parallax effect
-        const parallaxY = x * 0.13;
-        gsap.to(bgButtonRef.current, {
-          transform: `rotateY(${parallaxY}deg) rotateX(15deg)`,
-          duration: 0.7,
-        });
+      // For parallax effect
+      const parallaxY = x * 0.13;
+      gsap.to(bgButtonRef.current, {
+        transform: `rotateY(${parallaxY}deg) rotateX(15deg)`,
+        duration: 0.7,
       });
+    }),
+    [],
+  );
+
+  useGSAP(
+    () => {
+      if (
+        !bgButtonRef.current ||
+        !buttonRef.current ||
+        !timelineRef.current ||
+        comeingSoon
+      )
+        return;
 
       timelineRef.current.clear();
       const staggerFrom = LeftIcon ? "end" : "start";
 
-      if (buttonHovered) {
+      if (buttonHovered && !scrolled) {
         timelineRef.current
           .to(bgButtonRef.current, {
             ease: "back.out",
@@ -85,45 +96,70 @@ function Button({
 
         buttonRef.current.addEventListener("mousemove", handleMouseMove);
       } else {
-        timelineRef.current
-          .to(bgButtonRef.current, {
-            ease: "power4.out",
-            overwrite: true,
-            borderRadius: "2rem",
-            height: "100%",
-            transform: `rotateY(0deg) rotateX(0deg)`,
-            duration: 0.5,
-          })
-          .set(
-            ".animation",
-            {
-              translateY: "-1rem",
-              opacity: 0,
-            },
-            "<",
-          )
-          .to(
-            ".animation",
-            {
-              translateY: "0rem",
-              opacity: 1,
-              stagger: {
-                ease: "power4.out",
-                from: staggerFrom,
-                each: 0.1,
-              },
+        if (scrolled) {
+          timelineRef.current
+            .to(bgButtonRef.current, {
+              ease: "power4.out",
+              overwrite: true,
+              borderRadius: "2rem",
+              height: "100%",
+              transform: `rotateY(0deg) rotateX(0deg)`,
               duration: 0.5,
-            },
-            "<",
-          );
-
+            })
+            .to(
+              ".animation",
+              {
+                translateY: "0rem",
+                opacity: 1,
+                stagger: {
+                  ease: "power4.out",
+                  from: staggerFrom,
+                  each: 0.1,
+                },
+                duration: 0.5,
+              },
+              "<",
+            );
+        } else {
+          timelineRef.current
+            .to(bgButtonRef.current, {
+              ease: "power4.out",
+              overwrite: true,
+              borderRadius: "2rem",
+              height: "100%",
+              transform: `rotateY(0deg) rotateX(0deg)`,
+              duration: 0.5,
+            })
+            .set(
+              ".animation",
+              {
+                translateY: "-1rem",
+                opacity: 0,
+              },
+              "<",
+            )
+            .to(
+              ".animation",
+              {
+                translateY: "0rem",
+                opacity: 1,
+                stagger: {
+                  ease: "power4.out",
+                  from: staggerFrom,
+                  each: 0.1,
+                },
+                duration: 0.5,
+              },
+              "<",
+            );
+        }
         buttonRef.current.removeEventListener("mousemove", handleMouseMove);
       }
       return () => {
         buttonRef.current?.removeEventListener("mousemove", handleMouseMove);
       };
     },
-    { dependencies: [buttonHovered], scope: buttonRef },
+    { dependencies: [buttonHovered, scrolled], scope: buttonRef },
   );
   return (
     <button
