@@ -26,6 +26,7 @@ function Hero() {
   const [miniVidChangeAnimation, setMiniVidChangeAnimation] = useState(false);
 
   // For how many videos are loaded
+  // @ts-expect-error To ignore the error of `videoLoaded` so that I will use it in the future.
   const [videoLoaded, setVideoLoaded] = useState(0);
 
   // For the current video
