@@ -5,6 +5,8 @@ function About() {
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden mt-36">
       <div className="w-screen flex flex-col items-center">
+        <AnimatedSmallText text="Welcome to Zentry" />
+        <AnimatedHeader text="Disc<b>o</b>ver the world's <br />largest shared <b>a</b>dventure" />
         <div className="w-full h-dvh relative">
           <img
             src="../../public/img/about.webp"
