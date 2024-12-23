@@ -70,7 +70,7 @@ body {
     @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
   }
   .hero-heading {
-    @apply font-bold text-8xl sm:text-[14rem] tracking-[0.015em] leading-[0.8em] uppercase text-textColor;
+    @apply font-bold font-zentry text-8xl sm:text-[14rem] tracking-[0.015em] leading-[0.8em] uppercase text-textColor;
   }
   .special-font b {
     font-family: "Zentry";
