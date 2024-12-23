@@ -72,6 +72,9 @@ body {
   .hero-heading {
     @apply font-bold font-zentry text-8xl sm:text-[14rem] tracking-[0.015em] leading-[0.8em] uppercase text-textColor;
   }
+  .sub-heading {
+    @apply font-bold font-zentry text-7xl sm:text-[7rem] tracking-[0.015em] leading-[0.9em] uppercase text-textColor text-center;
+  }
   .special-font b {
     font-family: "Zentry";
     font-feature-settings: "ss01" on;

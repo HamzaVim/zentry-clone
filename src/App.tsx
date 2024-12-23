@@ -1,3 +1,4 @@
+import About from "./components/About";
 import Hero from "./components/Hero";
 
 function App() {
@@ -5,7 +6,7 @@ function App() {
     <>
       <main>
         <Hero />
-        <div className="w-full h-dvh" />
+        <About />
       </main>
     </>
   );
