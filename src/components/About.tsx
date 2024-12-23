@@ -1,12 +1,46 @@
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
+import { useEffect, useRef, useState } from "react";
 import AnimatedSmallText from "./AnimatedSmallText";
 import AnimatedHeader from "./AnimatedHeader";
 
 function About() {
+  // NOTE: States & Refs: ---------------------------------------------------
+
+  // State when the user is in view
+  const [inView, setInView] = useState<boolean | null>(null);
+
+  // Ref for the container
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // NOTE: Functions: ---------------------------------------------------
+
+  // When the user scrolls to the About section
+  gsap.registerPlugin(ScrollTrigger);
+  useEffect(() => {
+    if (!containerRef.current) return;
+    ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top 90%",
+      end: "bottom top",
+      onEnter: () => {
+        // If the user scrolls to the About section then set the state to true
+        setInView(true);
+      },
+      onLeaveBack: () => {
+        // If the user scrolls out of the About section to the top (not bottom) then set the state to false
+        setInView(false);
+      },
+    });
+  }, []);
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden mt-36">
-      <div className="w-screen flex flex-col items-center">
-        <AnimatedSmallText text="Welcome to Zentry" />
-        <AnimatedHeader text="Disc<b>o</b>ver the world's <br />largest shared <b>a</b>dventure" />
+      <div ref={containerRef} className="w-screen flex flex-col items-center">
+        <AnimatedSmallText text="Welcome to Zentry" containerViewed={inView} />
+        <AnimatedHeader
+          text="Disc<b>o</b>ver the world's <br />largest shared <b>a</b>dventure"
+          containerViewed={inView}
+        />
         <div className="w-full h-dvh relative">
           <img
             src="../../public/img/about.webp"
