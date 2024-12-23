@@ -525,7 +525,7 @@ function Hero() {
     <div className="relative min-h-screen w-screen overflow-hidden">
       {/* NOTE: the container of all the videos. */}
       <div
-        className="h-dvh w-screen absolute top-0 left-0"
+        className="h-dvh w-screen absolute"
         onMouseMove={() => {
           if (!animationLoaded) setAnimationLoaded(true);
           if (scrolled) return;
