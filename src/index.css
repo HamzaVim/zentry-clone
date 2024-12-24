@@ -46,16 +46,16 @@ body {
     @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
   }
   .hero-heading {
-    @apply font-bold font-zentry text-8xl sm:text-[14rem] tracking-[0.015em] leading-[0.8em] uppercase text-textColor;
+    @apply font-bold font-zentry text-9xl lg:text-[12rem] xl:text-[14rem] tracking-[0.015em] leading-[0.8em] uppercase text-textColor;
   }
   .sub-heading {
-    @apply font-bold font-zentry text-7xl sm:text-[7rem] tracking-[0.015em] leading-[0.9em] uppercase text-textColor text-center;
+    @apply font-bold font-zentry text-5xl sm:text-7xl xl:text-[7rem] tracking-[0.015em] leading-[0.9em] uppercase text-textColor text-center flex flex-col px-6;
   }
   .special-font b {
     font-family: "Zentry";
     font-feature-settings: "ss01" on;
   }
   .paragraph {
-    @apply font-robert-medium text-lg md:text-2xl text-textColor;
+    @apply font-robert-medium text-xl lg:text-2xl text-textColor;
   }
 }

@@ -112,7 +112,7 @@ function AnimatedHeader({
   );
   return (
     <div ref={containerRef} style={{ perspective: "1000px" }}>
-      <h2 className="sub-heading special-font text-black flex flex-col">
+      <h2 className="sub-heading special-font text-black">
         {text.split("<br />").map((line, i) => (
           <span key={i}>
             {line.split(" ").map((word, j) => (

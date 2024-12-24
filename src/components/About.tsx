@@ -241,7 +241,7 @@ function About() {
             }}
             className="w-full h-full object-cover absolute top-1/2 left-1/2 z-[100]"
           />
-          <div className="w-full text-center font-robert-medium font-bold text-xl leading-[1.2em] absolute bottom-24 -z-10">
+          <div className="w-full text-center font-robert-medium font-bold md:text-xl text-base leading-[1.2em] absolute bottom-16 md:bottom-24 px-6 -z-10">
             <p>The Game of Games begins—your life, now an epic MMORPG</p>
             <p className="text-black/40">
               Zentry unites the every players from countless games and

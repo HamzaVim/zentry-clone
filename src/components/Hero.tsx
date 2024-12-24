@@ -583,7 +583,7 @@ function Hero() {
         }}
         ref={heroRef}
       >
-        <div className="w-fit absolute top-36 flex flex-col gap-8 pl-12 z-40 select-none pointer-events-none">
+        <div className="w-fit absolute top-36 flex flex-col gap-8 pl-6 xl:pl-12 z-40 select-none pointer-events-none">
           <h1 className="hero-heading special-font">
             redefi<b>n</b>e
           </h1>
@@ -595,12 +595,14 @@ function Hero() {
           <Button
             title={"watch trailer"}
             bgClass={"bg-accentColor"}
-            containerClass={"w-60 h-14 text-base tracking-widest "}
+            containerClass={
+              "w-52 h-12 text-sm lg:w-60 lg:h-14 lg:text-base tracking-widest "
+            }
             LeftIcon={HeroArrow}
             scrolled={scrolled}
           />
         </div>
-        <div className="w-fit absolute bottom-14 right-0 pr-12 z-40 select-none pointer-events-none">
+        <div className="w-fit absolute bottom-14 right-0 pr-6 xl:pr-12 z-40 select-none pointer-events-none">
           <h1 className="hero-heading special-font">
             g<b>a</b>ming
           </h1>
@@ -680,7 +682,7 @@ function Hero() {
           </div>
         ))}
       </div>
-      <div className="w-fit absolute bottom-14 right-0 pr-12 -z-10 select-none pointer-events-none">
+      <div className="w-fit absolute bottom-14 right-0 pr-6 xl:pr-12 -z-10 select-none pointer-events-none">
         <h1 className="hero-heading special-font text-textColorInverted">
           g<b>a</b>ming
         </h1>
