@@ -225,7 +225,7 @@ function About() {
           </div>
           {/* NOTE: Image of about */}
           <img
-            src="../../public/img/about.webp"
+            src="/img/about.webp"
             alt="about image"
             style={{
               mask: "url(#mask)",
@@ -234,7 +234,7 @@ function About() {
           />
           {/* NOTE: Image of stones */}
           <img
-            src="../../public/img/stones.webp"
+            src="/img/stones.webp"
             alt="stones image"
             style={{
               transform: `translate(calc(-50% + var(--mouse-x)), calc(-50% + var(--mouse-y)))`,
