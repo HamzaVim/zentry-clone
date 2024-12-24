@@ -474,20 +474,69 @@ function Hero() {
   );
 
   // Initial video state ---------------------------------------------------
-  useGSAP(() => {
-    if (!videosRef.current) return;
+  useGSAP(
+    () => {
+      if (!videosRef.current) return;
 
-    gsap.set(`#mask-rect-${currentIndex}, #mask-border-${currentIndex}`, {
-      "--full-screan-h": "101dvh",
-      "--full-screan-w": "102vw",
-      "--half-size": "0rem",
-      "--full-size": "0rem",
-      "--translate-w": "-1vw",
-      "--translate-h": "-1vh",
-    });
+      Array.from({ length: totalVideos }, (_, i) => {
+        if (i === currentIndex) {
+          gsap.set(`#mask-rect-${i}, #mask-border-${i}`, {
+            /* NOTE: For animation when start */
+            "--full-size": "0rem",
+            "--half-size": "0rem",
+            "--rx": "0rem",
 
-    videosRef.current[currentIndex].play();
-  });
+            /* NOTE: rect and border position and rotation for mouse movement, 0px and 0deg initial value */
+            "--mouse-x": "0px",
+            "--mouse-y": "0px",
+            "--rotate-x": "0deg",
+            "--rotate-y": "0deg",
+
+            /* NOTE: When miniVideo initial value */
+            "--full-screan-h": "101dvh",
+            "--full-screan-w": "102vw",
+            "--translate-w": "-1vw",
+            "--translate-h": "-1vh",
+            "--border-translate": "50%",
+          });
+          gsap.set(`#mask-container-${i}`, {
+            /* NOTE: For the svg and border container */
+            "--container-full-size": "20rem",
+            "--container-rx": "0.4rem",
+          });
+        } else {
+          gsap.set(`#mask-rect-${i}, #mask-border-${i}`, {
+            /* NOTE: For animation when start */
+            "--full-size": "0rem",
+            "--half-size": "0rem",
+            "--rx": "0rem",
+
+            /* NOTE: rect and border position and rotation for mouse movement, 0px and 0deg initial value */
+            "--mouse-x": "0px",
+            "--mouse-y": "0px",
+            "--rotate-x": "0deg",
+            "--rotate-y": "0deg",
+
+            /* NOTE: When miniVideo initial value */
+            "--full-screan-h": "0dvh",
+            "--full-screan-w": "0vw",
+            "--border-translate": "50%",
+            "--translate-w": "50vw",
+            "--translate-h": "50vh",
+          });
+
+          gsap.set(`#mask-container-${i}`, {
+            /* NOTE: For the svg and border container */
+            "--container-full-size": "20rem",
+            "--container-rx": "0.4rem",
+          });
+        }
+      });
+
+      videosRef.current[currentIndex].play();
+    },
+    { scope: heroRef },
+  );
 
   gsap.registerPlugin(ScrollTrigger);
   useEffect(() => {
@@ -569,7 +618,7 @@ function Hero() {
               style={{
                 width: "var(--container-full-size)",
                 height: "var(--container-full-size)",
-                borderRadius: "var(--rx)",
+                borderRadius: "var(--container-rx)",
               }}
               className={`${scrolled ? "" : "cursor-pointer"} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50`}
               onClick={handleMiniVidChange}

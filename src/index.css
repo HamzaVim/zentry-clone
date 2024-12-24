@@ -2,30 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* NOTE: For animation when start */
-  --half-size: 0rem;
-  --full-size: 0rem;
-  --rx: 0rem;
-
-  /* NOTE: For the svg and border container */
-  --container-full-size: 20rem;
-  --container-rx: 0.4rem;
-
-  /* NOTE: rect and border position and rotation for mouse movement, 0px and 0deg initial value */
-  --mouse-x: 0px;
-  --mouse-y: 0px;
-  --rotate-x: 0deg;
-  --rotate-y: 0deg;
-
-  /* NOTE: When miniVideo initial value */
-  --full-screan-h: 0dvh;
-  --full-screan-w: 0vw;
-  --border-translate: 50%;
-  --translate-w: 50vw;
-  --translate-h: 50vh;
-}
-
 body {
   font-family: "general", sans-serif;
   width: 100dvw;
