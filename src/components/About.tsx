@@ -43,6 +43,38 @@ function About() {
     });
   }, []);
 
+  // When the image is in view it will add scroll trigger so it can animate ---------------------------------------------------
+  useGSAP(
+    () => {
+      if (!imageContainerRef.current || !imageInView) return;
+      gsap.timeline().to("#mask, #mask-border", {
+        scrollTrigger: {
+          trigger: imageContainerRef.current,
+          start: "top top",
+          end: "+=300",
+          toggleActions: "play pause reverse reset",
+          scrub: true,
+          pin: true,
+          pinSpacing: true,
+          onLeave: () => {
+            // If the user scrolls out of the About section to the bottom then set the state to false
+            setInView(false);
+          },
+          onEnterBack: () => {
+            // If the user scrolls to the About section then set the state to true
+            setInView(true);
+          },
+        },
+        ease: "none",
+        "--translate-w": "0vw",
+        "--translate-h": "0vh",
+        "--full-screan-w": "100vw",
+        "--full-screan-h": "100dvh",
+      });
+    },
+    { dependencies: [imageInView], scope: imageContainerRef },
+  );
+
   // Tilt Effect for the image ---------------------------------------------------
   const { contextSafe } = useGSAP();
 

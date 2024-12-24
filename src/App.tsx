@@ -7,6 +7,7 @@ function App() {
       <main>
         <Hero />
         <About />
+        <div className="w-full h-screen bg-black" />
       </main>
     </>
   );
