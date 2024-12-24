@@ -1,8 +1,9 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import AnimatedSmallText from "./AnimatedSmallText";
 import AnimatedHeader from "./AnimatedHeader";
+import { useGSAP } from "@gsap/react";
 
 function About() {
   // NOTE: States & Refs: ---------------------------------------------------
@@ -17,11 +18,11 @@ function About() {
 
   // When the user scrolls to the About section
   gsap.registerPlugin(ScrollTrigger);
-  useEffect(() => {
+  useGSAP(() => {
     if (!containerRef.current) return;
     ScrollTrigger.create({
       trigger: containerRef.current,
-      start: "top 90%",
+      start: "top 80%",
       end: "bottom top",
       onEnter: () => {
         // If the user scrolls to the About section then set the state to true
