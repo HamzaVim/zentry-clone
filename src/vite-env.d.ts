@@ -9,3 +9,4 @@ interface CustomButtonProps {
   comeingSoon?: boolean;
   scrolled?: boolean;
 }
+type HeaderState = "show" | "float" | "hide";
