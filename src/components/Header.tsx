@@ -191,7 +191,7 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
           </div>
         </div>
         <nav
-          className="relative"
+          className="relative hidden lg:block"
           onMouseEnter={() => {
             setNavHover(true);
           }}
@@ -232,6 +232,11 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
             />
           </ul>
         </nav>
+        <button className="flex flex-col gap-1 items-center bg-bgColor px-3 py-4 rounded-full mr-6 lg:hidden">
+          <div className="w-8 h-1 bg-black rounded-full" />
+          <div className="w-8 h-1 bg-black rounded-full" />
+          <div className="w-8 h-1 bg-black rounded-full" />
+        </button>
       </div>
     </header>
   );
