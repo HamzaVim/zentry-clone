@@ -151,7 +151,7 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
           overwrite: "auto",
           delay: 0.3,
           background: "rgba(0,0,0,1)",
-          borderColor: "rgb(255,255,255,0.15)",
+          borderColor: "rgb(255,255,255,0.20)",
         });
       } else {
         gsap.to("#header", {

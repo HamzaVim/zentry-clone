@@ -10,7 +10,7 @@ function Hero() {
   // NOTE: The total number of videos
   const totalVideos = 4;
 
-  // NOTE: States: ---------------------------------------------------
+  // NOTE: States & Refs: ---------------------------------------------------
 
   // For mouse movement
   const [mouseActive, setMouseActive] = useState(false);

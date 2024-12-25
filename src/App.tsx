@@ -40,7 +40,9 @@ function App() {
       <main>
         <Hero />
         <About />
-        <div className="w-full h-screen bg-black" />
+        <div className="w-full h-screen bg-black text-textColor flex justify-center items-center">
+          TO BE CONTINUED
+        </div>
       </main>
     </>
   );
