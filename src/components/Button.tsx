@@ -28,6 +28,8 @@ function Button({
     timelineRef.current = gsap.timeline();
   });
 
+  const audioRef = useRef<HTMLAudioElement>(null);
+
   // NOTE: Animation: ---------------------------------------------------
 
   const { contextSafe } = useGSAP();
@@ -163,8 +165,15 @@ function Button({
   );
   return (
     <button
-      onMouseEnter={() => setButtonHovered(true)}
-      onMouseLeave={() => setButtonHovered(false)}
+      onMouseEnter={() => {
+        setButtonHovered(true);
+        if (audioRef.current) {
+          audioRef.current.play();
+        }
+      }}
+      onMouseLeave={() => {
+        setButtonHovered(false);
+      }}
       ref={buttonRef}
       className={`relative z-50 flex justify-center items-center gap-2 pointer-events-auto ${containerClass}`}
     >
@@ -177,6 +186,7 @@ function Button({
         {title}
       </span>
       {RightIcon && <RightIcon />}
+      <audio className="hidden" src="/audio/button-audio.mp3" ref={audioRef} />
     </button>
   );
 }
