@@ -1,6 +1,7 @@
 import { useLayoutEffect, useState } from "react";
 import About from "./components/About";
 import Hero from "./components/Hero";
+import Header from "./components/Header";
 
 function App() {
   // NOTE: States & Refs: ---------------------------------------------------
@@ -35,6 +36,7 @@ function App() {
 
   return (
     <>
+      <Header showHeader={showHeader} />
       <main>
         <Hero />
         <About />
