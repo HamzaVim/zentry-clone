@@ -2,6 +2,7 @@ import { useLayoutEffect, useState } from "react";
 import About from "./components/About";
 import Hero from "./components/Hero";
 import Header from "./components/Header";
+import Section3 from "./components/Section3";
 
 function App() {
   // NOTE: States & Refs: ---------------------------------------------------
@@ -40,6 +41,7 @@ function App() {
       <main>
         <Hero />
         <About />
+        <Section3 />
         <div className="w-full h-screen bg-black text-textColor flex justify-center items-center">
           TO BE CONTINUED
         </div>
