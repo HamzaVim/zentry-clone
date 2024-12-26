@@ -36,16 +36,19 @@ function Button({
 
   // For mouse movement
   const handleMouseMove = useCallback(
-    contextSafe((e: MouseEvent) => {
+    contextSafe((e: React.MouseEvent<HTMLButtonElement>) => {
       if (!buttonRef.current) return;
 
       // Get the mouse position
-      const x = e.clientX;
+      // const x = e.clientX;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
 
       // For parallax effect
-      const parallaxY = x * 0.13;
+      const parallaxY = x * 0.15;
       gsap.to(bgButtonRef.current, {
-        transform: `rotateY(${parallaxY}deg) rotateX(15deg)`,
+        rotateY: parallaxY,
+        rotateX: 15,
         duration: 0.7,
       });
     }),
@@ -167,7 +170,7 @@ function Button({
     <button
       onMouseEnter={() => {
         setButtonHovered(true);
-        if (audioRef.current) {
+        if (audioRef.current && !scrolled) {
           audioRef.current.play();
         }
       }}
