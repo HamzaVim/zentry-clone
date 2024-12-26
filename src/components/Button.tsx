@@ -36,12 +36,11 @@ function Button({
 
   // For mouse movement
   const handleMouseMove = useCallback(
-    contextSafe((e: React.MouseEvent<HTMLButtonElement>) => {
+    contextSafe((e: MouseEvent) => {
       if (!buttonRef.current) return;
 
       // Get the mouse position
-      // const x = e.clientX;
-      const rect = e.currentTarget.getBoundingClientRect();
+      const rect = buttonRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left;
 
       // For parallax effect
