@@ -182,11 +182,13 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
               bgClass="bg-bgColor"
               containerClass="w-fit px-6 py-1 text-xs"
               RightIcon={DownArrow}
+              arrowClass="z-30 animation "
             />
             <Button
               title="Whitepaper"
               bgClass="bg-bgColor"
               containerClass="w-fit px-6 py-1 text-xs"
+              arrowClass="z-30 animation "
             />
           </div>
         </div>

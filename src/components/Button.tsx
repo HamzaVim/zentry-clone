@@ -10,6 +10,7 @@ function Button({
   containerClass,
   comeingSoon,
   scrolled,
+  arrowClass,
 }: CustomButtonProps) {
   // NOTE: States & Refs: ---------------------------------------------------
 
@@ -165,6 +166,22 @@ function Button({
     },
     { dependencies: [buttonHovered, scrolled], scope: buttonRef },
   );
+
+  if (comeingSoon) {
+    return (
+      <button
+        className={`relative z-50 flex justify-center items-center gap-2 pointer-events-auto ${containerClass}`}
+      >
+        <div
+          className={`w-full h-full absolute z-0 rounded-[2rem] bg-black border border-bgColor/30`}
+        />
+        {LeftIcon && <LeftIcon className={arrowClass} />}
+        <span className=" font-roboto-mono font-bold uppercase relative block z-10 ">
+          {title}
+        </span>
+      </button>
+    );
+  }
   return (
     <button
       onMouseEnter={() => {
@@ -177,17 +194,17 @@ function Button({
         setButtonHovered(false);
       }}
       ref={buttonRef}
-      className={`relative z-50 flex justify-center items-center gap-2 pointer-events-auto ${containerClass}`}
+      className={`relative z-50 flex justify-center items-center gap-2 pointer-events-auto text-black  ${containerClass}`}
     >
       <div
         ref={bgButtonRef}
         className={`w-full h-full absolute z-0 rounded-[2rem] ${bgClass}`}
       />
-      {LeftIcon && <LeftIcon />}
-      <span className=" font-roboto-mono text-black font-bold uppercase relative block z-10 animation">
+      {LeftIcon && <LeftIcon className={arrowClass} />}
+      <span className=" font-roboto-mono font-bold uppercase relative block z-10 animation">
         {title}
       </span>
-      {RightIcon && <RightIcon />}
+      {RightIcon && <RightIcon className={arrowClass} />}
       <audio className="hidden" src="/audio/button-audio.mp3" ref={audioRef} />
     </button>
   );

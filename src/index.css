@@ -10,6 +10,9 @@ body {
 }
 
 @layer base {
+  :root {
+    --hsl: 255, 255, 255;
+  }
   @font-face {
     font-family: "zentry";
     src: url("/fonts/zentry-regular.woff2") format("woff2");

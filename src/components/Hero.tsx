@@ -600,6 +600,7 @@ function Hero() {
             }
             LeftIcon={HeroArrow}
             scrolled={scrolled}
+            arrowClass="z-30 animation "
           />
         </div>
         <div className="w-fit absolute bottom-14 right-0 pr-6 xl:pr-12 z-40 select-none pointer-events-none">

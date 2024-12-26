@@ -14,6 +14,7 @@ export default {
       colors: {
         bgColor: "#DFDFF2",
         textColor: "#DFDFF2",
+        hsl: "rgba(var(--hsl), 0.2)",
         textColorInverted: "#000",
         accentColor: "#EDFF66",
         colorsPurple: "#5542FF",
