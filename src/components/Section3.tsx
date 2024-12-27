@@ -86,9 +86,32 @@ function Section3() {
         if (item === e.target) {
           videoRef.current[i].play();
           gsap.to(item.firstChild, {
-            overwrite: true,
             duration: 0.5,
-            scale: 0.98,
+            scale: 0.9,
+          });
+        }
+      });
+    }),
+    [],
+  );
+
+  const handleMouseMove = useCallback(
+    contextSafe((e: Event) => {
+      const ev = e as MouseEvent;
+
+      bentoCardContainerRef.current.map((item, i) => {
+        if (item === e.target) {
+          const rect = item.getBoundingClientRect();
+          const x = ev.clientX - rect.left - rect.width / 2;
+          const y = ev.clientY - rect.top - rect.height / 2;
+
+          const parallaxY = x * -0.008;
+          const parallaxX = y * 0.008;
+
+          gsap.to(bentoCardAnimationRef.current[i], {
+            duration: 1,
+            rotateX: parallaxX,
+            rotateY: parallaxY,
           });
         }
       });
@@ -104,9 +127,10 @@ function Section3() {
           videoRef.current[i].pause();
           videoRef.current[i].currentTime = 0;
           gsap.to(item.firstChild, {
-            overwrite: true,
             duration: 0.5,
             scale: 1,
+            rotateX: 0,
+            rotateY: 0,
           });
         }
       });
@@ -121,17 +145,58 @@ function Section3() {
     if (!bentoCardContainerRef.current[0] || !videoRef.current[0]) return;
 
     const bentoCardContainer = bentoCardContainerRef.current;
+
+    const handleMouseEnterWithMove = (e: MouseEvent) => {
+      if (!e.target) return;
+
+      const eTarget = e.target as HTMLElement;
+
+      const target = bentoCardAnimationRef.current.find(
+        (item) => item === eTarget.firstElementChild,
+      ) as HTMLDivElement;
+
+      gsap.set(target, {
+        duration: 0,
+        transformOrigin: "center center",
+      });
+
+      handleMouseEnter(e);
+      e.target.addEventListener("mousemove", handleMouseMove);
+    };
+
+    const handleMouseLeaveWithMove = (e: MouseEvent) => {
+      if (!e.target) return;
+
+      const eTarget = e.target as HTMLElement;
+
+      const target = bentoCardAnimationRef.current.find(
+        (item) => item === eTarget.firstElementChild,
+      ) as HTMLDivElement;
+
+      gsap.set(target, {
+        overwrite: true,
+        delay: 0.5,
+        duration: 0,
+        transformOrigin: "center top",
+        rotateX: 0,
+        rotateY: 0,
+      });
+
+      handleMouseLeave(e);
+      e.target.removeEventListener("mousemove", handleMouseMove);
+    };
+
     bentoCardContainer.forEach((item) => {
-      item.addEventListener("mouseenter", handleMouseEnter);
-      item.addEventListener("mouseleave", handleMouseLeave);
+      item.addEventListener("mouseenter", handleMouseEnterWithMove);
+      item.addEventListener("mouseleave", handleMouseLeaveWithMove);
     });
     return () => {
       bentoCardContainer.forEach((item) => {
-        item.removeEventListener("mouseenter", handleMouseEnter);
+        item.removeEventListener("mouseenter", handleMouseEnterWithMove);
         item.removeEventListener("mouseleave", handleMouseLeave);
       });
     };
-  }, [handleMouseEnter, handleMouseLeave]);
+  }, [handleMouseEnter, handleMouseLeave, handleMouseMove]);
 
   // When the user scrolls to every bento card.
   useGSAP(
@@ -197,7 +262,7 @@ function Section3() {
       >
         <div
           ref={(el) => (bentoCardAnimationRef.current[0] = el!)}
-          className="border border-hsl w-full h-full rounded-lg overflow-hidden"
+          className="border border-hsl w-full h-full rounded-lg overflow-hidden pointer-events-none"
         >
           <BentoCard
             title={
@@ -220,14 +285,14 @@ function Section3() {
           />
         </div>
       </div>
-      <div className="h-[100vh] w-full rounded-lg grid grid-cols-2 grid-rows-2 gap-8 mt-8">
+      <div className="h-[100vh] w-full rounded-lg grid xl:grid-cols-2 grid-cols-1 xl:grid-rows-2 grid-rows-3 gap-8 mt-8">
         <div
-          className="row-span-2 "
+          className="xl:row-span-2"
           ref={(el) => (bentoCardContainerRef.current[1] = el!)}
         >
           <div
             ref={(el) => (bentoCardAnimationRef.current[1] = el!)}
-            className="border border-hsl size-full rounded-lg overflow-hidden"
+            className="border border-hsl size-full rounded-lg overflow-hidden pointer-events-none"
           >
             <BentoCard
               title={
@@ -253,7 +318,7 @@ function Section3() {
         <div ref={(el) => (bentoCardContainerRef.current[2] = el!)}>
           <div
             ref={(el) => (bentoCardAnimationRef.current[2] = el!)}
-            className="border border-hsl w-full h-full overflow-hidden rounded-lg"
+            className="border border-hsl w-full h-full overflow-hidden rounded-lg pointer-events-none"
           >
             <BentoCard
               title={
@@ -280,7 +345,7 @@ function Section3() {
         <div ref={(el) => (bentoCardContainerRef.current[3] = el!)}>
           <div
             ref={(el) => (bentoCardAnimationRef.current[3] = el!)}
-            className="border border-hsl w-full h-full overflow-hidden rounded-lg"
+            className="border border-hsl w-full h-full overflow-hidden rounded-lg pointer-events-none"
           >
             <BentoCard
               title={
