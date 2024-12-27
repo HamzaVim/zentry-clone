@@ -10,11 +10,15 @@ interface CustomButtonProps {
   scrolled?: boolean;
   arrowClass: string;
 }
+
 type HeaderState = "show" | "float" | "hide";
+
 interface BentoCardProps {
   title: JSX.Element;
   src: string;
   desc: JSX.Element;
   buttonsTitle: string[];
   position: string;
+  ref: (el: HTMLVideoElement) => void;
+  setVideoLoaded: (value: React.SetStateAction<number>) => void;
 }
