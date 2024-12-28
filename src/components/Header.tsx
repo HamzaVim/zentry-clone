@@ -31,6 +31,9 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
   // State when the navigation item is selected
   const [selected, setSelected] = useState(false);
 
+  // State for the music button if it's active
+  const [musicActive, setMusicActive] = useState(false);
+
   // NOTE: Functions: ---------------------------------------------------
 
   // Get the width of the navigation items
@@ -111,14 +114,14 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
     });
     gsap.to(navItemsRef.current[navItemHover!], {
       duration: 0,
-      delay: 0.2,
+      delay: 0.1,
       ease: "power4.in",
       color: "black",
     });
     navItemsRef.current.forEach((item, index) => {
       if (index !== navItemHover) {
         gsap.to(item, {
-          duration: 0.2,
+          duration: 0.1,
           ease: "power4.in",
           color: "#DFDFF2",
         });
@@ -166,6 +169,35 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
     { dependencies: [showHeader] },
   );
 
+  useGSAP(
+    () => {
+      if (!musicRef.current) return;
+
+      if (musicActive) {
+        gsap.to(".musicAnimation", {
+          height: 18,
+          duration: 0.5,
+          stagger: {
+            each: 0.15,
+            repeat: -1,
+            yoyo: true,
+            from: "edges",
+          },
+        });
+      } else {
+        gsap.to(".musicAnimation", {
+          overwrite: true,
+          duration: 0.4,
+          height: 8,
+          stagger: {
+            repeat: 0,
+            yoyo: false,
+          },
+        });
+      }
+    },
+    { dependencies: [musicActive] },
+  );
   return (
     <header
       id="header"
@@ -192,48 +224,59 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
             />
           </div>
         </div>
-        <nav
-          className="relative hidden lg:block"
-          onMouseEnter={() => {
-            setNavHover(true);
-          }}
-          onMouseLeave={() => {
-            setNavHover(false);
-          }}
-        >
-          <ul className="flex relative z-20">
-            {navItems.map((item, index) => (
-              <li
-                key={item}
-                ref={(el) => {
-                  if (!el) return;
-                  navItemsRef.current[index] = el;
-                }}
-                onMouseEnter={() => {
-                  setNavItemHover(index);
-                }}
-                className="text-textColor text-sm z-[100]"
-              >
-                <a
-                  className={`px-6 py-3 font-bold flex gap-1.5 items-center uppercase`}
-                  href={`#${item}`}
+        <div className="relative hidden lg:flex items-center">
+          <nav
+            onMouseEnter={() => {
+              setNavHover(true);
+            }}
+            onMouseLeave={() => {
+              setNavHover(false);
+            }}
+          >
+            <ul className="flex relative z-20">
+              {navItems.map((item, index) => (
+                <li
+                  key={item}
+                  ref={(el) => {
+                    if (!el) return;
+                    navItemsRef.current[index] = el;
+                  }}
+                  onMouseEnter={() => {
+                    setNavItemHover(index);
+                  }}
+                  className="text-textColor text-sm z-[100]"
                 >
-                  {item}
-                  {index === 0 || index === 1 ? <TiLocationArrow /> : null}
-                </a>
-              </li>
-            ))}
-            {/*
-            <li>
-              <a href="#">Toggle sound</a>
-            </li>
-            */}
-            <li
-              ref={navItemSlectRef}
-              className={`block absolute top-0 left-0 h-full bg-bgColor rounded-full`}
+                  <a
+                    className={`px-6 py-3 font-bold flex gap-1.5 items-center uppercase`}
+                    href={`#${item}`}
+                  >
+                    {item}
+                    {index === 0 || index === 1 ? <TiLocationArrow /> : null}
+                  </a>
+                </li>
+              ))}
+              <li
+                ref={navItemSlectRef}
+                className={`block absolute top-0 left-0 h-full bg-bgColor rounded-full`}
+              />
+            </ul>
+          </nav>
+          <button
+            onClick={() => setMusicActive((prev) => !prev)}
+            className="flex gap-1 items-center z-[100] px-6 py-3 h-[20px]"
+          >
+            <div className="w-[1px] bg-bgColor musicAnimation" />
+            <div className="w-[1px] bg-bgColor musicAnimation" />
+            <div className="w-[1px] bg-bgColor musicAnimation" />
+            <div className="w-[1px] bg-bgColor musicAnimation" />
+            <div className="w-[1px] bg-bgColor musicAnimation" />
+            <audio
+              className="hidden"
+              src="/audio/loop.mp3"
+              loop
             />
-          </ul>
-        </nav>
+          </button>
+        </div>
         <button className="flex flex-col gap-1 items-center bg-bgColor px-3 py-4 rounded-full mr-6 lg:hidden">
           <div className="w-8 h-1 bg-black rounded-full" />
           <div className="w-8 h-1 bg-black rounded-full" />
