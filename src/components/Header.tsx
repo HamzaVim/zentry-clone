@@ -166,16 +166,17 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
       duration: 0.4,
     });
     gsap.to(navItemsRef.current[navItemHover!], {
-      duration: 0,
+      duration: 0.1,
       delay: 0.1,
-      ease: "power4.in",
+      ease: "none",
       color: "black",
     });
     navItemsRef.current.forEach((item, index) => {
       if (index !== navItemHover) {
         gsap.to(item, {
           duration: 0.1,
-          ease: "power4.in",
+          delay: 0.1,
+          ease: "none",
           color: "#DFDFF2",
         });
       }
