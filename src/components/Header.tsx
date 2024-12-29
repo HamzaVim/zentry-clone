@@ -37,8 +37,12 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
   // Ref for the music
   const musicRef = useRef<HTMLAudioElement>(null);
 
+  // Ref for navbar hover audio
+  const navAudioRef = useRef<HTMLAudioElement[]>([]);
+
   // State for the interval
   const intervalRef = useRef<number | null>(null); // Use number instead of NodeJS.Timeout
+
   // NOTE: Functions: ---------------------------------------------------
 
   // Get the width of the navigation items
@@ -108,6 +112,14 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
     if (!navItemSlectRef.current || !navItemsRef.current) return;
 
     if (navHover) {
+      // Play the audio if the navigation item is hovered and if the audio is not paused (is playing) set the current time to 0.
+      if (!navAudioRef.current[0]) return;
+      if (!navAudioRef.current[navItemHover!].paused)
+        navAudioRef.current[navItemHover!].currentTime = 0;
+
+      navAudioRef.current[navItemHover!].play();
+
+      // Animate the navigation item
       gsap.to(navItemSlectRef.current, {
         overwrite: "auto",
         duration: 0,
@@ -164,6 +176,14 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
       x: getX(navItemHover!),
       width: navItemsWidth[navItemHover!],
       duration: 0.4,
+      onStart: () => {
+        // Play the audio if the navigation item is hovered and if the audio is not paused (is playing) set the current time to 0.
+        if (!navAudioRef.current[0]) return;
+        if (!navAudioRef.current[navItemHover!].paused)
+          navAudioRef.current[navItemHover!].currentTime = 0;
+
+        navAudioRef.current[navItemHover!].play();
+      },
     });
     gsap.to(navItemsRef.current[navItemHover!], {
       duration: 0.1,
@@ -315,6 +335,12 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
                     {item}
                     {index === 0 || index === 1 ? <TiLocationArrow /> : null}
                   </a>
+
+                  <audio
+                    ref={(el) => (navAudioRef.current[index] = el!)}
+                    className="hidden"
+                    src="/audio/navbar.mp3"
+                  />
                 </li>
               ))}
               <li
