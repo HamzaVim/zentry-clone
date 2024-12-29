@@ -34,6 +34,11 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
   // State for the music button if it's active
   const [musicActive, setMusicActive] = useState(false);
 
+  // Ref for the music
+  const musicRef = useRef<HTMLAudioElement>(null);
+
+  // State for the interval
+  const intervalRef = useRef<number | null>(null); // Use number instead of NodeJS.Timeout
   // NOTE: Functions: ---------------------------------------------------
 
   // Get the width of the navigation items
@@ -48,6 +53,54 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
     const total = fromTo.reduce((acc, curr) => acc + curr, 0);
     return total;
   };
+
+  // Toggle the music
+  useEffect(() => {
+    if (!musicRef.current) return;
+
+    // clear the intervalRef if it's exist
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+    }
+
+    // if 'musicActive' is true: it will play the music and start the interval to increase the volume.
+    if (musicActive) {
+      musicRef.current.play();
+
+      intervalRef.current = setInterval(() => {
+        if (!musicRef.current) return;
+
+        const currentVolume = musicRef.current.volume;
+
+        // If volume reaches 0.8, stop the interval
+        if (currentVolume >= 0.8) {
+          musicRef.current.volume = 0.8;
+
+          if (intervalRef.current !== null) clearInterval(intervalRef.current);
+        } else {
+          // Increment volume in steps of 0.05
+          musicRef.current.volume = Math.min(currentVolume + 0.05, 0.8);
+        }
+      }, 150);
+    } else {
+      // if 'musicActive' is false: it will start the interval to decrease the volume and after that it will pause the music.
+      intervalRef.current = setInterval(() => {
+        if (!musicRef.current) return;
+
+        const currentVolume = musicRef.current.volume;
+
+        // If volume reaches 0.0, stop the interval
+        if (currentVolume <= 0.0) {
+          musicRef.current.volume = 0.0;
+
+          if (intervalRef.current !== null) clearInterval(intervalRef.current);
+        } else {
+          // Decrement volume in steps of 0.05
+          musicRef.current.volume = Math.max(currentVolume - 0.05, 0.0);
+        }
+      }, 50);
+    }
+  }, [musicActive]);
 
   // NOTE: Animation: ---------------------------------------------------
 
@@ -169,21 +222,28 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
     { dependencies: [showHeader] },
   );
 
+  // Animate music button
   useGSAP(
     () => {
       if (!musicRef.current) return;
 
       if (musicActive) {
-        gsap.to(".musicAnimation", {
-          height: 18,
-          duration: 0.5,
-          stagger: {
-            each: 0.15,
-            repeat: -1,
-            yoyo: true,
-            from: "edges",
+        gsap.fromTo(
+          ".musicAnimation",
+          {
+            height: 8,
           },
-        });
+          {
+            height: 18,
+            duration: 0.5,
+            stagger: {
+              each: 0.15,
+              repeat: -1,
+              yoyo: true,
+              from: "edges",
+            },
+          },
+        );
       } else {
         gsap.to(".musicAnimation", {
           overwrite: true,
@@ -198,6 +258,7 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
     },
     { dependencies: [musicActive] },
   );
+
   return (
     <header
       id="header"
@@ -262,7 +323,9 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
             </ul>
           </nav>
           <button
-            onClick={() => setMusicActive((prev) => !prev)}
+            onClick={() => {
+              setMusicActive((prev) => !prev);
+            }}
             className="flex gap-1 items-center z-[100] px-6 py-3 h-[20px]"
           >
             <div className="w-[1px] bg-bgColor musicAnimation" />
@@ -271,6 +334,7 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
             <div className="w-[1px] bg-bgColor musicAnimation" />
             <div className="w-[1px] bg-bgColor musicAnimation" />
             <audio
+              ref={musicRef}
               className="hidden"
               src="/audio/loop.mp3"
               loop
