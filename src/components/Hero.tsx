@@ -44,6 +44,8 @@ function Hero() {
   // When the user scrolled did it animated?
   const [scrolledAnimated, setScrolledAnimated] = useState(false);
 
+  const whooshRef = useRef<HTMLAudioElement>(null);
+
   // NOTE: Functions: ---------------------------------------------------
 
   // Every 300ms check if mouse is active more than the time now.
@@ -377,6 +379,19 @@ function Hero() {
           "--translate-h": "-1vh",
           onStart: () => {
             videosRef.current[currentIndex].play();
+            if (!whooshRef.current) return;
+            const times = [0, 3, 5.9];
+            whooshRef.current.currentTime =
+              times[Math.floor(Math.random() * times.length)];
+
+            whooshRef.current.play().then(() => {
+              setTimeout(() => {
+                if (!whooshRef.current) return;
+
+                whooshRef.current.pause();
+                whooshRef.current.currentTime = 0;
+              }, 1000);
+            });
           },
         })
         .set(
@@ -688,6 +703,12 @@ function Hero() {
           g<b>a</b>ming
         </h1>
       </div>
+      <audio
+        ref={whooshRef}
+        className="hidden"
+        src="/audio/whoosh.mp3"
+        loop
+      />
     </div>
   );
 }
