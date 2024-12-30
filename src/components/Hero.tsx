@@ -26,7 +26,6 @@ function Hero() {
   const [miniVidChangeAnimation, setMiniVidChangeAnimation] = useState(false);
 
   // For how many videos are loaded
-  // @ts-expect-error To ignore the error of `videoLoaded` so that I will use it in the future.
   const [videoLoaded, setVideoLoaded] = useState(0);
 
   // For the current video
@@ -90,6 +89,43 @@ function Hero() {
     setMiniVidChangeAnimation(true);
     setCurrentIndex(getNextCurrentIndex());
   };
+
+  useEffect(() => {
+    if (videoLoaded === totalVideos) {
+      const threeDots = gsap.utils.toArray(".three-body__dot");
+      gsap.to(threeDots[0] as gsap.TweenTarget, {
+        duration: 2,
+        bottom: "50vw",
+        left: "50vw",
+        opacity: 0,
+      });
+      gsap.to(threeDots[1] as gsap.TweenTarget, {
+        duration: 2,
+        bottom: "50vw",
+        right: "50vw",
+        opacity: 0,
+      });
+      gsap.to(threeDots[2] as gsap.TweenTarget, {
+        duration: 2,
+        bottom: "-50vw",
+        left: "50vw",
+        opacity: 0,
+      });
+      gsap.to(threeDots, {
+        delay: 1,
+        animation: "",
+      });
+      gsap.to("#loader", {
+        opacity: 0,
+        duration: 1,
+        display: "none",
+        delay: 1,
+        onComplete: () => {
+          setAnimationLoaded(true);
+        },
+      });
+    }
+  }, [videoLoaded]);
 
   // NOTE: Animations: ---------------------------------------------------
 
@@ -587,6 +623,16 @@ function Hero() {
 
   return (
     <div className="relative min-h-screen w-screen overflow-hidden">
+      <div
+        id="loader"
+        className="flex flex-col items-center justify-center fixed h-dvh w-screen bg-bgColor z-[100000] overflow-hidden"
+      >
+        <div className="three-body">
+          <div className="three-body__dot" />
+          <div className="three-body__dot" />
+          <div className="three-body__dot" />
+        </div>
+      </div>
       {/* NOTE: the container of all the videos. */}
       <div
         className="h-dvh w-screen absolute"
