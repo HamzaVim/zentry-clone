@@ -5,6 +5,7 @@ import { useInterval } from "usehooks-ts";
 import Button from "./Button";
 import HeroArrow from "./svgs/HeroArrow";
 import { ScrollTrigger } from "gsap/all";
+import { useGlobalContext } from "../context/useGlobalContext";
 
 function Hero() {
   // NOTE: The total number of videos
@@ -44,6 +45,8 @@ function Hero() {
   const [scrolledAnimated, setScrolledAnimated] = useState(false);
 
   const whooshRef = useRef<HTMLAudioElement>(null);
+
+  const { isMuted } = useGlobalContext();
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -754,6 +757,7 @@ function Hero() {
         className="hidden"
         src="/audio/whoosh.mp3"
         loop
+        muted={isMuted}
       />
     </div>
   );

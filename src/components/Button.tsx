@@ -1,6 +1,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useCallback, useRef, useState } from "react";
+import { useGlobalContext } from "../context/useGlobalContext";
 
 function Button({
   title,
@@ -30,6 +31,8 @@ function Button({
   });
 
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const { isMuted } = useGlobalContext();
 
   // NOTE: Animation: ---------------------------------------------------
 
@@ -187,6 +190,7 @@ function Button({
       onMouseEnter={() => {
         setButtonHovered(true);
         if (audioRef.current && !scrolled) {
+          if (!audioRef.current.paused) audioRef.current.currentTime = 0;
           audioRef.current.play();
         }
       }}
@@ -205,7 +209,12 @@ function Button({
         {title}
       </span>
       {RightIcon && <RightIcon className={arrowClass} />}
-      <audio className="hidden" src="/audio/button-audio.mp3" ref={audioRef} />
+      <audio
+        ref={audioRef}
+        className="hidden"
+        src="/audio/button-audio.mp3"
+        muted={isMuted}
+      />
     </button>
   );
 }

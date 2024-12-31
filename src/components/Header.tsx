@@ -4,6 +4,7 @@ import Button from "./Button";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import DownArrow from "./svgs/DownArrow";
+import { useGlobalContext } from "../context/useGlobalContext";
 
 function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
   // NOTE: Constants: ---------------------------------------------------
@@ -42,6 +43,8 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
 
   // State for the interval
   const intervalRef = useRef<number | null>(null); // Use number instead of NodeJS.Timeout
+
+  const { isMuted, setIsMuted } = useGlobalContext();
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -340,6 +343,7 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
                     ref={(el) => (navAudioRef.current[index] = el!)}
                     className="hidden"
                     src="/audio/navbar.mp3"
+                    muted={isMuted}
                   />
                 </li>
               ))}
@@ -352,6 +356,7 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
           <button
             onClick={() => {
               setMusicActive((prev) => !prev);
+              setIsMuted(false);
             }}
             className="flex gap-1 items-center z-[100] px-6 py-3 h-[20px]"
           >
@@ -365,6 +370,10 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
               className="hidden"
               src="/audio/loop.mp3"
               loop
+              muted={isMuted}
+              onCanPlay={() => {
+                setIsMuted(false);
+              }}
             />
           </button>
         </div>

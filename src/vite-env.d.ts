@@ -22,3 +22,12 @@ interface BentoCardProps {
   ref: (el: HTMLVideoElement) => void;
   setVideoLoaded: (value: React.SetStateAction<number>) => void;
 }
+
+type GlobalProviderProps = {
+  children: React.ReactNode;
+};
+
+interface GlobalContextType {
+  isMuted: boolean;
+  setIsMuted: React.Dispatch<React.SetStateAction<boolean>>;
+}
