@@ -90,7 +90,7 @@ function Section3() {
           videoRef.current[i].play();
           gsap.to(item.firstChild, {
             duration: 0.5,
-            scale: 0.9,
+            scale: 0.95,
           });
         }
       });
@@ -264,7 +264,7 @@ function Section3() {
   return (
     <section
       ref={section3Ref}
-      className="min-h-screen w-screen overflow-hidden bg-black lg:px-48 px-24"
+      className="min-h-screen w-screen overflow-hidden bg-black xl:px-48 sm:px-24 px-6"
     >
       <p className="w-full text-textColor font-robert-medium font-bold md:text-[1.35rem] md:leading-[1.2em] text-base py-44">
         Dive into the 'Game of Games' Universe
