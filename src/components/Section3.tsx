@@ -14,7 +14,7 @@ const BentoCard = forwardRef<HTMLVideoElement, BentoCardProps>(
           ref={ref}
           loop
           muted
-          onLoadStart={() => {
+          onLoadedData={() => {
             setVideoLoaded((prev) => prev + 1);
           }}
           className={`absolute top-0 right-0 h-full ${position === "center" && "w-full"} object-cover object-${position}`}
