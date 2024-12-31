@@ -1,11 +1,19 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useInterval } from "usehooks-ts";
 import Button from "./Button";
 import HeroArrow from "./svgs/HeroArrow";
 import { ScrollTrigger } from "gsap/all";
 import { useGlobalContext } from "../context/useGlobalContext";
+import AnimatedHeader from "./AnimatedHeader";
+import AnimatedSmallText from "./AnimatedSmallText";
 
 function Hero() {
   // NOTE: The total number of videos
@@ -19,9 +27,6 @@ function Hero() {
 
   // Hover state for the `mask-container`
   const [maskHover, setMaskHover] = useState(false);
-
-  // Stop all animation mouse isn't moving at the first place.
-  const [animationLoaded, setAnimationLoaded] = useState(false);
 
   // When the mini video (mask) clicked all animation stops.
   const [miniVidChangeAnimation, setMiniVidChangeAnimation] = useState(false);
@@ -47,6 +52,9 @@ function Hero() {
   const whooshRef = useRef<HTMLAudioElement>(null);
 
   const { isMuted } = useGlobalContext();
+
+  // When the site is loading
+  const [isLoading, setIsLoading] = useState<boolean | null>(null);
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -93,42 +101,13 @@ function Hero() {
     setCurrentIndex(getNextCurrentIndex());
   };
 
-  useEffect(() => {
-    if (videoLoaded === totalVideos) {
-      const threeDots = gsap.utils.toArray(".three-body__dot");
-      gsap.to(threeDots[0] as gsap.TweenTarget, {
-        duration: 2,
-        bottom: "50vw",
-        left: "50vw",
-        opacity: 0,
-      });
-      gsap.to(threeDots[1] as gsap.TweenTarget, {
-        duration: 2,
-        bottom: "50vw",
-        right: "50vw",
-        opacity: 0,
-      });
-      gsap.to(threeDots[2] as gsap.TweenTarget, {
-        duration: 2,
-        bottom: "-50vw",
-        left: "50vw",
-        opacity: 0,
-      });
-      gsap.to(threeDots, {
-        delay: 1,
-        animation: "",
-      });
-      gsap.to("#loader", {
-        opacity: 0,
-        duration: 1,
-        display: "none",
-        delay: 1,
-        onComplete: () => {
-          setAnimationLoaded(true);
-        },
-      });
-    }
-  }, [videoLoaded]);
+  // If the site is loading then set the 'isLoading' to true
+  useLayoutEffect(() => {
+    document.body.style.overflow = "hidden";
+    setTimeout(() => {
+      setIsLoading(true);
+    }, 1000);
+  }, []);
 
   // NOTE: Animations: ---------------------------------------------------
 
@@ -153,7 +132,6 @@ function Hero() {
       if (
         !timelineHoverRef.current ||
         !timelineMouseActiveRef.current ||
-        !animationLoaded ||
         !timelineMiniVidChangeRef.current ||
         miniVidChangeAnimation ||
         scrolledAnimated
@@ -276,7 +254,6 @@ function Hero() {
         !timelineMouseActiveRef.current ||
         !timelineHoverRef.current ||
         (maskHover && !scrolled) ||
-        !animationLoaded ||
         miniVidChangeAnimation ||
         scrolledAnimated
       )
@@ -378,7 +355,6 @@ function Hero() {
       if (
         !timelineHoverRef.current ||
         !timelineMouseActiveRef.current ||
-        !animationLoaded ||
         !timelineMiniVidChangeRef.current ||
         !miniVidChangeAnimation
       )
@@ -511,13 +487,13 @@ function Hero() {
           });
         } else {
           gsap.set(`#video-frame-${i}`, {
-            delay: animationLoaded ? 1.2 : 0,
+            delay: 1.2,
             zIndex: 0,
             display: "none",
           });
           gsap.to(`#video-frame-${prevCurrentIndex}`, {
             duration: 0,
-            delay: animationLoaded ? 1.2 : 0.1,
+            delay: 1.2,
             zIndex: 0,
             display: "none",
           });
@@ -624,12 +600,62 @@ function Hero() {
       });
   }, []);
 
+  // Loader animation ---------------------------------------------------
+  useEffect(() => {
+    if (videoLoaded === totalVideos) {
+      const threeDots = gsap.utils.toArray(".three-body__dot");
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 5000);
+
+      setTimeout(() => {
+        gsap.to(threeDots, {
+          duration: 1.5,
+          opacity: 0,
+        });
+        gsap.to(threeDots, {
+          delay: 1,
+          animation: "",
+        });
+        gsap.to("#loader", {
+          opacity: 0,
+          duration: 1,
+          display: "none",
+          delay: 1.5,
+          onComplete: () => {
+            document.body.style.overflow = "";
+          },
+        });
+      }, 6000);
+    }
+  }, [videoLoaded]);
+
   return (
     <div className="relative min-h-screen w-screen overflow-hidden">
       <div
         id="loader"
         className="flex flex-col items-center justify-center fixed h-dvh w-screen bg-bgColor z-[100000] overflow-hidden"
       >
+        <div className="w-fit h-fit absolute top-36 left-0 pl-6 xl:pl-12 select-none pointer-events-none">
+          <div className="px-6">
+            <AnimatedSmallText
+              text="welcome to my"
+              containerViewed={isLoading}
+            />
+          </div>
+          <AnimatedHeader
+            text="ze<b>n</b>try clone website"
+            containerViewed={isLoading}
+          />
+        </div>
+        <div className="w-[23rem] h-fit text-center absolute bottom-14 right-0 pr-6 xl:pr-12 select-none pointer-events-none">
+          <div className="px-6">
+            <AnimatedSmallText
+              text="it's a clone website from zentry.com an awward winning website"
+              containerViewed={isLoading}
+            />
+          </div>
+        </div>
         <div className="three-body">
           <div className="three-body__dot" />
           <div className="three-body__dot" />
@@ -640,7 +666,6 @@ function Hero() {
       <div
         className="h-dvh w-screen absolute"
         onMouseMove={() => {
-          if (!animationLoaded) setAnimationLoaded(true);
           if (scrolled) return;
           setMouseActiveTime(Date.now());
           setMouseActive(true);
