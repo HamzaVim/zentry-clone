@@ -75,6 +75,9 @@ function Section3() {
   // When the video is loaded, `videoLoaded` is incremented
   const [videoLoaded, setVideoLoaded] = useState(0);
 
+  // Ref for the section
+  const section3Ref = useRef<HTMLSelectElement>(null);
+
   // NOTE: Functions: ---------------------------------------------------
   const { contextSafe } = useGSAP();
   gsap.registerPlugin(ScrollTrigger);
@@ -137,6 +140,45 @@ function Section3() {
     }),
     [],
   );
+
+  // Adding scrollTrigger when the section is in viewed by 1%
+  useEffect(() => {
+    if (!section3Ref.current) return;
+
+    const section3 = section3Ref.current;
+
+    const observer = new IntersectionObserver(
+      ([{ isIntersecting }]) => {
+        if (!isIntersecting) return;
+
+        bentoCardAnimationRef.current.map(
+          contextSafe((item, i) => {
+            gsap.to(item, {
+              scrollTrigger: {
+                trigger: bentoCardContainerRef.current[i],
+                start: "top 85%",
+                end: "top 85%",
+                toggleActions: "play none reverse none",
+              },
+              duration: 0.5,
+              rotateX: "0deg",
+              y: "0px",
+            });
+          }),
+        );
+        observer.unobserve(section3);
+      },
+      { threshold: 0.01 }, // Trigger when 1% of the element is in view
+    );
+
+    observer.observe(section3);
+
+    return () => {
+      if (section3) {
+        observer.unobserve(section3);
+      }
+    };
+  }, []);
 
   // NOTE: Animation: ---------------------------------------------------
 
@@ -207,18 +249,6 @@ function Section3() {
       )
         return;
 
-      // NOTE: When the video is loaded all scroll triggers are initialized because the DOM is updated and the size of the video is changed
-      // Clear existing ScrollTriggers before reinitializing
-      ScrollTrigger.getAll().forEach((trigger) => {
-        bentoCardContainerRef.current.forEach((item) => {
-          if (item === trigger.trigger) {
-            trigger.kill();
-          }
-        });
-      });
-      // Refresh ScrollTrigger to measure updated DOM
-      ScrollTrigger.refresh();
-
       gsap.set(bentoCardContainerRef.current, {
         perspective: 1000,
       });
@@ -227,27 +257,15 @@ function Section3() {
         y: "200px",
         transformOrigin: "center top",
       });
-      bentoCardAnimationRef.current.map(
-        contextSafe((item, i) => {
-          gsap.to(item, {
-            scrollTrigger: {
-              trigger: bentoCardContainerRef.current[i],
-              start: "top 85%",
-              end: "top 85%",
-              toggleActions: "play none reverse none",
-            },
-            duration: 0.5,
-            rotateX: "0deg",
-            y: "0px",
-          });
-        }),
-      );
     },
     { dependencies: [videoLoaded] },
   );
 
   return (
-    <section className="min-h-screen w-screen overflow-hidden bg-black lg:px-48 px-24">
+    <section
+      ref={section3Ref}
+      className="min-h-screen w-screen overflow-hidden bg-black lg:px-48 px-24"
+    >
       <p className="w-full text-textColor font-robert-medium font-bold md:text-[1.35rem] md:leading-[1.2em] text-base py-44">
         Dive into the 'Game of Games' Universe
         <span className="block opacity-40">
