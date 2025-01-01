@@ -37,11 +37,6 @@ body {
     font-family: "robert-regular";
     src: url("/fonts/robert-regular.woff2") format("woff2");
   }
-
-  @font-face {
-    font-family: "roboto-mono";
-    src: url("/fonts/roboto-mono.woff2") format("woff2");
-  }
 }
 
 @layer components {

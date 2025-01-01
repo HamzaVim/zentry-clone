@@ -179,7 +179,7 @@ function Button({
           className={`w-full h-full absolute z-0 rounded-[2rem] bg-black border border-bgColor/30`}
         />
         {LeftIcon && <LeftIcon className={arrowClass} />}
-        <span className=" font-roboto-mono font-bold uppercase relative block z-10 ">
+        <span className="font-bold uppercase relative block z-10 ">
           {title}
         </span>
       </button>
@@ -205,7 +205,7 @@ function Button({
         className={`w-full h-full absolute z-0 rounded-[2rem] ${bgClass}`}
       />
       {LeftIcon && <LeftIcon className={arrowClass} />}
-      <span className=" font-roboto-mono font-bold uppercase relative block z-10 animation">
+      <span className="font-bold uppercase relative block z-10 animation">
         {title}
       </span>
       {RightIcon && <RightIcon className={arrowClass} />}
