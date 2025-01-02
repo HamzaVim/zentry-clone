@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import About from "./components/About";
 import Hero from "./components/Hero";
 import Header from "./components/Header";
@@ -34,6 +34,28 @@ function App() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [scrollPosition]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const logo = document.head.getElementsByTagName("link");
+
+    // Initial logo
+    if (mediaQuery.matches) {
+      logo[0].setAttribute("href", "/logo-light.png");
+    } else {
+      logo[0].setAttribute("href", "/logo-dark.png");
+    }
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        logo[0].setAttribute("href", "/logo-light.png");
+      } else {
+        logo[0].setAttribute("href", "/logo-dark.png");
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+  }, []);
 
   return (
     <>
