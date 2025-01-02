@@ -32,5 +32,8 @@ interface GlobalContextType {
   setIsMuted: React.Dispatch<React.SetStateAction<boolean>>;
   isLoading: boolean | null;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | null>>;
-  musicRef: React.RefObject<HTMLAudioElement>;
+  musicActive: boolean | null;
+  setMusicActive: React.Dispatch<React.SetStateAction<boolean | null>>;
+  musicRuns: boolean;
+  setMusicRuns: React.Dispatch<React.SetStateAction<boolean>>;
 }

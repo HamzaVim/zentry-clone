@@ -32,16 +32,24 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
   // State when the navigation item is selected
   const [selected, setSelected] = useState(false);
 
-  // State for the music button if it's active
-  const [musicActive, setMusicActive] = useState(false);
-
   // Ref for navbar hover audio
   const navAudioRef = useRef<HTMLAudioElement[]>([]);
 
   // State for the interval
   const intervalRef = useRef<number | null>(null); // Use number instead of NodeJS.Timeout
 
-  const { isMuted, setIsMuted, isLoading, musicRef } = useGlobalContext();
+  // Ref for the music
+  const musicRef = useRef<HTMLAudioElement>(null);
+
+  const {
+    isMuted,
+    setIsMuted,
+    isLoading,
+    musicActive,
+    setMusicActive,
+    musicRuns,
+    setMusicRuns,
+  } = useGlobalContext();
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -70,22 +78,26 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
     // if 'musicActive' is true: it will play the music and start the interval to increase the volume.
     if (musicActive) {
       musicRef.current.play();
+      if (!musicRuns) setMusicRuns(true);
 
       intervalRef.current = setInterval(() => {
         if (!musicRef.current) return;
 
         const currentVolume = musicRef.current.volume;
 
-        // If volume reaches 0.8, stop the interval
-        if (currentVolume >= 0.8) {
-          musicRef.current.volume = 0.8;
+        // If volume reaches 0.5, stop the interval
+        if (currentVolume >= 0.5) {
+          musicRef.current.volume = 0.5;
 
           if (intervalRef.current !== null) clearInterval(intervalRef.current);
         } else {
           // Increment volume in steps of 0.05
-          musicRef.current.volume = Math.min(currentVolume + 0.05, 0.8);
+          musicRef.current.volume = Math.min(currentVolume + 0.05, 0.5);
         }
       }, 150);
+    } else if (musicActive === null) {
+      musicRef.current.currentTime = 0;
+      musicRef.current.volume = 0.0;
     } else {
       // if 'musicActive' is false: it will start the interval to decrease the volume and after that it will pause the music.
       intervalRef.current = setInterval(() => {
@@ -114,10 +126,11 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
     if (navHover) {
       // Play the audio if the navigation item is hovered and if the audio is not paused (is playing) set the current time to 0.
       if (!navAudioRef.current[0]) return;
-      if (!navAudioRef.current[navItemHover!].paused)
-        navAudioRef.current[navItemHover!].currentTime = 0;
-
-      navAudioRef.current[navItemHover!].play();
+      if (!isMuted) {
+        if (!navAudioRef.current[navItemHover!].paused)
+          navAudioRef.current[navItemHover!].currentTime = 0;
+        navAudioRef.current[navItemHover!].play();
+      }
 
       // Animate the navigation item
       gsap.to(navItemSlectRef.current, {
@@ -179,10 +192,11 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
       onStart: () => {
         // Play the audio if the navigation item is hovered and if the audio is not paused (is playing) set the current time to 0.
         if (!navAudioRef.current[0]) return;
-        if (!navAudioRef.current[navItemHover!].paused)
-          navAudioRef.current[navItemHover!].currentTime = 0;
-
-        navAudioRef.current[navItemHover!].play();
+        if (!isMuted) {
+          if (!navAudioRef.current[navItemHover!].paused)
+            navAudioRef.current[navItemHover!].currentTime = 0;
+          navAudioRef.current[navItemHover!].play();
+        }
       },
     });
     gsap.to(navItemsRef.current[navItemHover!], {
@@ -352,7 +366,11 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
           </nav>
           <button
             onClick={() => {
-              setMusicActive((prev) => !prev);
+              if (musicActive === null) {
+                setMusicActive(true);
+              } else {
+                setMusicActive((prev) => !prev);
+              }
               setIsMuted(false);
             }}
             className="flex gap-1 items-center z-[100] px-6 py-3 h-[20px]"
@@ -368,9 +386,6 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
               src="/audio/loop.mp3"
               loop
               muted={isMuted}
-              onCanPlay={() => {
-                setIsMuted(false);
-              }}
             />
           </button>
         </div>

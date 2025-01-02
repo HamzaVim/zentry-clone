@@ -51,7 +51,15 @@ function Hero() {
 
   const whooshRef = useRef<HTMLAudioElement>(null);
 
-  const { isMuted, setIsMuted, isLoading, setIsLoading } = useGlobalContext();
+  const {
+    isMuted,
+    setIsMuted,
+    isLoading,
+    setIsLoading,
+    setMusicActive,
+    musicRuns,
+    setMusicRuns,
+  } = useGlobalContext();
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -395,6 +403,10 @@ function Hero() {
             videosRef.current[currentIndex].play();
             if (!whooshRef.current) return;
             if (isMuted) setIsMuted(false);
+            if (!musicRuns) {
+              setMusicRuns(true);
+              setMusicActive(true);
+            }
             const times = [0, 3, 5.9];
             whooshRef.current.currentTime =
               times[Math.floor(Math.random() * times.length)];

@@ -189,7 +189,7 @@ function Button({
     <button
       onMouseEnter={() => {
         setButtonHovered(true);
-        if (audioRef.current && !scrolled) {
+        if (audioRef.current && !scrolled && !isMuted) {
           if (!audioRef.current.paused) audioRef.current.currentTime = 0;
           audioRef.current.play();
         }
