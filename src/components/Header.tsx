@@ -55,10 +55,14 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
 
   // Get the width of the navigation items
   useEffect(() => {
-    if (navItemsRef.current.length > 0) {
-      setNavItemsWidth(navItemsRef.current.map((item) => item.offsetWidth));
-    }
-  }, []);
+    if (isLoading) return;
+    setNavItemsWidth(
+      navItemsRef.current.map((item) => {
+        return item.offsetWidth;
+      }),
+    );
+  }, [isLoading]);
+
   const getX = (index: number) => {
     const fromTo = navItemsWidth.slice(0, index);
 
@@ -332,7 +336,7 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
             <ul className="flex relative z-20">
               {navItems.map((item, index) => (
                 <li
-                  key={item}
+                  key={index}
                   ref={(el) => {
                     if (!el) return;
                     navItemsRef.current[index] = el;
