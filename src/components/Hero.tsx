@@ -574,8 +574,6 @@ function Hero() {
           });
         }
       });
-
-      videosRef.current[currentIndex].play();
     },
     { scope: heroRef },
   );
@@ -618,6 +616,7 @@ function Hero() {
       const threeDots = gsap.utils.toArray(".three-body__dot");
       setTimeout(() => {
         setIsLoading(false);
+        videosRef.current[currentIndex].play();
       }, 5000);
 
       setTimeout(() => {
