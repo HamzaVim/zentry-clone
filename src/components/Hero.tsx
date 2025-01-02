@@ -51,10 +51,7 @@ function Hero() {
 
   const whooshRef = useRef<HTMLAudioElement>(null);
 
-  const { isMuted } = useGlobalContext();
-
-  // When the site is loading
-  const [isLoading, setIsLoading] = useState<boolean | null>(null);
+  const { isMuted, setIsMuted, isLoading, setIsLoading } = useGlobalContext();
 
   // NOTE: Functions: ---------------------------------------------------
 
@@ -107,6 +104,7 @@ function Hero() {
     setTimeout(() => {
       setIsLoading(true);
     }, 1000);
+    // TODO: Implement an additional timeout to detect if the site is still loading, accounting for potential slow connections or poor Wi-Fi.
   }, []);
 
   // NOTE: Animations: ---------------------------------------------------
@@ -395,6 +393,7 @@ function Hero() {
           onStart: () => {
             videosRef.current[currentIndex].play();
             if (!whooshRef.current) return;
+            if (isMuted) setIsMuted(false);
             const times = [0, 3, 5.9];
             whooshRef.current.currentTime =
               times[Math.floor(Math.random() * times.length)];

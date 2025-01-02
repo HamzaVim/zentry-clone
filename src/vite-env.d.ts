@@ -30,4 +30,7 @@ type GlobalProviderProps = {
 interface GlobalContextType {
   isMuted: boolean;
   setIsMuted: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean | null;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean | null>>;
+  musicRef: React.RefObject<HTMLAudioElement>;
 }

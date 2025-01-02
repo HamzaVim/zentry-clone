@@ -35,16 +35,13 @@ function Header({ showHeader }: { showHeader: "show" | "float" | "hide" }) {
   // State for the music button if it's active
   const [musicActive, setMusicActive] = useState(false);
 
-  // Ref for the music
-  const musicRef = useRef<HTMLAudioElement>(null);
-
   // Ref for navbar hover audio
   const navAudioRef = useRef<HTMLAudioElement[]>([]);
 
   // State for the interval
   const intervalRef = useRef<number | null>(null); // Use number instead of NodeJS.Timeout
 
-  const { isMuted, setIsMuted } = useGlobalContext();
+  const { isMuted, setIsMuted, isLoading, musicRef } = useGlobalContext();
 
   // NOTE: Functions: ---------------------------------------------------
 
