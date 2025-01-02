@@ -233,15 +233,16 @@ function Hero() {
 
   useEffect(() => {
     if (!heroRef.current) return;
+    const heroRefCurrent = heroRef.current;
 
     if (!miniVidChangeAnimation && !scrolled) {
-      heroRef.current.addEventListener("mousemove", handleMouseMove);
+      heroRefCurrent.addEventListener("mousemove", handleMouseMove);
     } else {
-      heroRef.current.removeEventListener("mousemove", handleMouseMove);
+      heroRefCurrent.removeEventListener("mousemove", handleMouseMove);
     }
 
     return () => {
-      heroRef.current?.removeEventListener("mousemove", handleMouseMove);
+      heroRefCurrent.removeEventListener("mousemove", handleMouseMove);
     };
   }, [miniVidChangeAnimation, handleMouseMove, scrolled]);
 
